@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{{ post.title }} — EchoField{% endblock %}
+
+{% block content %}
+  <article>
+    <h2>{{ post.title }}</h2>
+    {% if post.published_at %}
+      <time>{{ post.published_at|date:"d.m.Y H:i" }}</time>
+    {% endif %}
+    <div>{{ post.content|safe }}</div>
+  </article>
+
+  <p><a href="/">&larr; {% translate "Back to posts" %}</a></p>
+{% endblock %}

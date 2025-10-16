@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}EchoField — {% translate "Posts" %}{% endblock %}
+
+{% block content %}
+  <h2>{% translate "Latest posts" %}</h2>
+  {% for post in posts %}
+    <article>
+      <h3>
+        <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
+      </h3>
+      {% if post.published_at %}
+        <time>{{ post.published_at|date:"d.m.Y" }}</time>
+      {% endif %}
+    </article>
+  {% empty %}
+    <p>{% translate "No posts yet." %}</p>
+  {% endfor %}
+
+  {% if is_paginated %}
+    <nav class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">&larr; {% translate "Previous" %}</a>
+      {% endif %}
+
+      <span>{% blocktrans %}Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}{% endblocktrans %}</span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">{% translate "Next" %} &rarr;</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% endblock %}

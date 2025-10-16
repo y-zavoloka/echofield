@@ -1,0 +1,45 @@
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}EchoField{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1><a href="/">EchoField</a></h1>
+
+      <nav id="lang-nav">
+        <form id="lang-form" action="{% url 'set_language' %}" method="post">
+          {% csrf_token %}
+          <select name="language" id="lang-switcher">
+            {% for lang_code, lang_name in LANGUAGES %}
+              <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>
+                {{ lang_name }}
+              </option>
+            {% endfor %}
+          </select>
+        </form>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; {{ now|date:"Y" }} EchoField</p>
+    </div>
+  </footer>
+
+  <script src="{% static 'blog/lang-switcher.js' %}"></script>
+</body>
+</html>
