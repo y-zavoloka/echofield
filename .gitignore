@@ -14,3 +14,6 @@ db.sqlite3
 
 # local environment variables
 .env*
+
+# translations
+src/locale/**/*.mo
