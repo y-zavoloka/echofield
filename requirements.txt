@@ -8,6 +8,10 @@ django==5.2.7
     #   django-modeltranslation
 django-modeltranslation==0.19.17
     # via echofield (pyproject.toml)
+gunicorn==23.0.0
+    # via echofield (pyproject.toml)
+packaging==25.0
+    # via gunicorn
 psycopg==3.2.10
     # via echofield (pyproject.toml)
 python-dotenv==1.1.1
