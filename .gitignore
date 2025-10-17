@@ -17,3 +17,6 @@ db.sqlite3
 
 # translations
 src/locale/**/*.mo
+
+src/staticfiles
+src/mediafiles
