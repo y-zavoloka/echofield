@@ -16,6 +16,8 @@ COPY . .
 # --- static build directory (Django collectstatic output) ---
 RUN mkdir -p /app/static /app/media
 
+WORKDIR /app/src
+
 # --- runtime ---
 ENV DJANGO_SETTINGS_MODULE=echofield.settings
 CMD ["gunicorn", "echofield.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2"]
