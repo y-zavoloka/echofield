@@ -14,6 +14,8 @@ packaging==25.0
     # via gunicorn
 psycopg==3.2.10
     # via echofield (pyproject.toml)
+psycopg2==2.9.11
+    # via echofield (pyproject.toml)
 python-dotenv==1.1.1
     # via echofield (pyproject.toml)
 sqlparse==0.5.3
