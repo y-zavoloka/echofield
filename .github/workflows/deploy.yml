@@ -44,6 +44,7 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
             set -e
+            IMAGE_NAME="ghcr.io/y-zavoloka/echofield"
             docker pull $IMAGE_NAME:latest
             cd /opt/echofield
             docker compose down
