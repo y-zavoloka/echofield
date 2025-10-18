@@ -8,7 +8,6 @@ import os
 USE_R2 = os.environ.get("USE_R2_STATIC", "False").lower() == "true"
 
 if USE_R2:
-    print("Using R2 storage")
     # === Cloudflare R2 config ===
     # AWS S3 settings for R2
     AWS_STORAGE_BUCKET_NAME = os.environ["R2_BUCKET"]
