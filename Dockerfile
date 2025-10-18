@@ -13,9 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # --- app source ---
 COPY . .
 
-# --- static build directory (Django collectstatic output) ---
-RUN mkdir -p /app/static /app/media
-
 WORKDIR /app/src
 
 # --- runtime ---
