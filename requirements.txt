@@ -2,23 +2,57 @@
 #    uv pip compile pyproject.toml -o requirements.txt
 asgiref==3.10.0
     # via django
+boto3==1.40.55
+    # via echofield (pyproject.toml)
+botocore==1.40.55
+    # via
+    #   boto3
+    #   s3transfer
+dj-database-url==3.0.1
+    # via echofield (pyproject.toml)
 django==5.2.7
     # via
     #   echofield (pyproject.toml)
+    #   dj-database-url
+    #   django-markdownx
     #   django-modeltranslation
+    #   django-storages
+    #   django-unfold
+django-markdownx==4.0.9
+    # via echofield (pyproject.toml)
 django-modeltranslation==0.19.17
+    # via echofield (pyproject.toml)
+django-storages==1.14.6
+    # via echofield (pyproject.toml)
+django-unfold==0.68.0
     # via echofield (pyproject.toml)
 gunicorn==23.0.0
     # via echofield (pyproject.toml)
+jmespath==1.0.1
+    # via
+    #   boto3
+    #   botocore
+markdown==3.9
+    # via django-markdownx
 packaging==25.0
     # via gunicorn
+pillow==12.0.0
+    # via django-markdownx
 psycopg==3.2.10
     # via echofield (pyproject.toml)
 psycopg2-binary==2.9.11
     # via echofield (pyproject.toml)
+python-dateutil==2.9.0.post0
+    # via botocore
 python-dotenv==1.1.1
     # via echofield (pyproject.toml)
+s3transfer==0.14.0
+    # via boto3
+six==1.17.0
+    # via python-dateutil
 sqlparse==0.5.3
     # via django
 typing-extensions==4.15.0
     # via psycopg
+urllib3==2.5.0
+    # via botocore
