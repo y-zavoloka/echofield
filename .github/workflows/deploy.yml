@@ -68,6 +68,10 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           source: "."
           target: "/opt/echofield"
+          recursive: true
+          strip_components: 0
+          overwrite: true
+          debug: true
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.10
