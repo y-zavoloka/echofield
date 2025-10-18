@@ -7,6 +7,7 @@ i18n_patterns = [
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("markdownx/", include("markdownx.urls")),
     path("", include("blog.urls")),
     *i18n_patterns,
 ]

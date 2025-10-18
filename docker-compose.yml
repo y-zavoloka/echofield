@@ -2,16 +2,43 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:18
-    container_name: echofield-db
+    image: postgres:17
+    container_name: echofield_db
     restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: echofield
-      POSTGRES_USER: echouser
-      POSTGRES_PASSWORD: echopass
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+  web:
+    build: ./app
+    container_name: echofield_web
+    command: gunicorn echofield.wsgi:application --bind 0.0.0.0:8000 --workers 2 --log-level debug --access-logfile - --error-logfile -
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+    expose:
+      - "8000"
+
+  nginx:
+    image: nginx:latest
+    container_name: echofield_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./app/static:/app/static
+      - ./app/media:/app/media
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro    
+    depends_on:
+      - web
+
 volumes:
-  pgdata:
+  postgres_data:
