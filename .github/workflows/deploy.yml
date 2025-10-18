@@ -60,6 +60,17 @@ jobs:
           USE_SSL=True
           EOF
 
+      - name: Prepare deploy directory
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          script: |
+            sudo mkdir -p /opt/echofield
+            sudo chown -R $USER:$USER /opt/echofield
+            sudo rm -rf /opt/echofield/*
+
       - name: Copy repo to Droplet
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -68,8 +79,6 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           source: "."
           target: "/opt/echofield"
-          recursive: true
-          strip_components: 0
           overwrite: true
           debug: true
 
