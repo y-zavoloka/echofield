@@ -36,6 +36,31 @@ jobs:
     needs: build
 
     steps:
+      - name: Generate .env file
+        run: |
+          cat > .env <<EOF
+          POSTGRES_DB=echofield
+          POSTGRES_USER=echouser
+          POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_USER=echouser
+          DB_NAME=echofield
+          DB_HOST=db
+          DEBUG=False
+          SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+          ALLOWED_HOSTS=echofield.dev,.echofield.dev,static.echofield.dev
+          CSRF_TRUSTED_ORIGINS=https://echofield.dev,https://static.echofield.dev
+          R2_BUCKET=echofield-static
+          R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
+          R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_S3_REGION_NAME=auto
+          R2_CUSTOM_DOMAIN=static.echofield.dev
+          USE_R2_STATIC=True
+          USE_SSL=True
+          EOF
+
+      
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.10
         with:

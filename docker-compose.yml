@@ -13,10 +13,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
   web:
     build: ./app
     container_name: echofield_web
-    command: gunicorn echofield.wsgi:application --bind 0.0.0.0:8000 --workers 2 --log-level debug --access-logfile - --error-logfile -
+    command: gunicorn echofield.wsgi:application --bind 0.0.0.0:8000 --workers 2 --log-level info
     env_file:
       - .env
     depends_on:
@@ -26,17 +27,17 @@ services:
       - "8000"
 
   nginx:
-    image: nginx:latest
+    image: nginx:1.27-alpine
     container_name: echofield_nginx
     restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
+      - ./nginx/echofield.conf:/etc/nginx/conf.d/default.conf:ro
       - ./app/static:/app/static
       - ./app/media:/app/media
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - /etc/letsencrypt:/etc/letsencrypt:ro    
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - web
 
