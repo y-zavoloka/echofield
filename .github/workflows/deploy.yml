@@ -81,18 +81,17 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
             set -e
-            sudo mkdir -p /opt/echofield
-            sudo chown -R $USER:$USER /opt/echofield
+            mkdir -p /opt/echofield
             # Create backup of current deployment
             if [ -d "/opt/echofield/backup" ]; then
-              sudo rm -rf /opt/echofield/backup
+              rm -rf /opt/echofield/backup
             fi
             if [ -d "/opt/echofield" ] && [ "$(ls -A /opt/echofield)" ]; then
-              sudo mkdir -p /opt/echofield/backup
-              sudo cp -r /opt/echofield/* /opt/echofield/backup/ 2>/dev/null || true
+              mkdir -p /opt/echofield/backup
+              cp -r /opt/echofield/* /opt/echofield/backup/ 2>/dev/null || true
             fi
             # Clean current deployment
-            sudo find /opt/echofield -mindepth 1 -maxdepth 1 ! -name 'backup' -exec rm -rf {} +
+            find /opt/echofield -mindepth 1 -maxdepth 1 ! -name 'backup' -exec rm -rf {} +
 
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.7
@@ -159,5 +158,5 @@ jobs:
             
             # Clean up old backup
             if [ -d "/opt/echofield/backup" ]; then
-              sudo rm -rf /opt/echofield/backup
+              rm -rf /opt/echofield/backup
             fi
