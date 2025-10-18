@@ -125,25 +125,22 @@ USE_TZ = True
 # Cloudflare R2 via S3
 USE_R2_STATIC = os.environ.get("USE_R2_STATIC", "False") == "True"
 
+
 if USE_R2_STATIC:
     # Cloudflare R2 (S3-compatible)
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-    AWS_STORAGE_BUCKET_NAME = os.environ["R2_BUCKET"]
-    AWS_S3_ENDPOINT_URL = os.environ["R2_ENDPOINT"]
-    AWS_ACCESS_KEY_ID = os.environ["R2_ACCESS_KEY_ID"]
-    AWS_SECRET_ACCESS_KEY = os.environ["R2_SECRET_ACCESS_KEY"]
+    AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
+    AWS_S3_ENDPOINT_URL = os.environ["AWS_S3_ENDPOINT_URL"]
+    AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
     AWS_DEFAULT_ACL = None
-    AWS_S3_REGION_NAME = "auto"
+    AWS_S3_REGION_NAME = os.environ["AWS_S3_REGION_NAME"]
     AWS_S3_ADDRESSING_STYLE = "virtual"
     STATIC_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_ENDPOINT_URL.split('https://')[1]}/"
     MEDIA_URL = STATIC_URL
-else:
-    STATIC_URL = "/static/"
-    MEDIA_URL = "/media/"
-    STATIC_ROOT = BASE_DIR / "staticfiles"
-    MEDIA_ROOT = BASE_DIR / "mediafiles"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
