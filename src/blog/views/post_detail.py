@@ -22,7 +22,7 @@ def _slug_for_lang(post: Post, lang: str) -> str:
     return getattr(post, f"slug_{lang}", None) or post.slug
 
 
-class PostDetailView(DetailView[Post]):
+class PostDetailView(DetailView):
     """
     Detail view for displaying individual blog posts with multilingual slug support.
 

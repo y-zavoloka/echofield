@@ -17,6 +17,8 @@ dependencies = [
     "gunicorn>=23.0.0",
     "psycopg>=3.2.10",
     "psycopg2-binary>=2.9.11",
+    "pydantic>=2.12.3",
+    "pydantic-settings>=2.11.0",
     "python-dotenv>=1.1.1",
 ]
 
