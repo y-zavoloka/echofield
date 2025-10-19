@@ -1,20 +1,41 @@
-# --- base image ---
+# ---------- Base ----------
 FROM python:3.12-slim
 
-# --- system setup ---
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV UV_SYSTEM_PYTHON=1
+
 WORKDIR /app
 
-# --- dependencies ---
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install uv (replaces pip/venv/poetry)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# --- app source ---
+# Copy only dependency files first
+COPY pyproject.toml uv.lock* ./
+
+# Sync dependencies (no venv, global within image)
+RUN uv sync --no-dev
+
+# ---------- Build ----------
+FROM base AS build
+
+# Copy project code
 COPY . .
 
-WORKDIR /app/src
+# Collect static assets if needed
+RUN uv run python manage.py collectstatic --noinput
 
-# --- runtime ---
-ENV DJANGO_SETTINGS_MODULE=echofield.settings
-CMD ["gunicorn", "echofield.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2"]
+# ---------- Runtime ----------
+FROM python:3.11-slim
+
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1
+
+# Copy env + installed deps
+COPY --from=build /root/.cache/uv /root/.cache/uv
+COPY --from=build /app /app
+
+# Expose Django port
+EXPOSE 8000
+
+CMD ["uv", "run", "gunicorn", "echofield.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2"]

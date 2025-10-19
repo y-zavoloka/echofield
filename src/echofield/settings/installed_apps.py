@@ -8,9 +8,9 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    "storages",               # R2 via S3
-    "modeltranslation",       # uk/en fields
-    "markdownx",              # markdown editor
+    "storages",  # R2 via S3
+    "modeltranslation",  # uk/en fields
+    "markdownx",  # markdown editor
 ]
 
 
@@ -19,8 +19,9 @@ PROJECT_APPS = [
 ]
 
 INSTALLED_APPS = [
-    "unfold",                 # admin theme
     *DJANGO_APPS,
     *THIRD_PARTY_APPS,
     *PROJECT_APPS,
 ]
+
+__all__ = ["INSTALLED_APPS"]

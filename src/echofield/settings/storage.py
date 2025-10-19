@@ -80,6 +80,7 @@ if USE_R2:
 else:
     # === Local static & media for dev / fallback ===
     from pathlib import Path
+
     BASE_DIR = Path(__file__).resolve().parent.parent
 
     STATIC_URL = "/static/"
@@ -104,3 +105,5 @@ else:
             },
         },
     }
+
+__all__ = ["STATIC_URL", "MEDIA_URL", "STATIC_ROOT", "MEDIA_ROOT", "STORAGES"]

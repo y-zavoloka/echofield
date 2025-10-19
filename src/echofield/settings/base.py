@@ -1,11 +1,11 @@
-from pathlib import Path
-from dotenv import load_dotenv, dotenv_values
 import os
+from pathlib import Path
 
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-load_dotenv(BASE_DIR / '..'/'.env')
+load_dotenv(BASE_DIR / ".." / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
@@ -61,10 +61,9 @@ WSGI_APPLICATION = "echofield.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-from .db import *
-
 # Authentication
 from .auth import *
+from .db import *
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -82,12 +81,11 @@ USE_TZ = True
 
 from .storage import *
 
-
 # Security
 use_ssl = os.environ.get("USE_SSL", "False") == "True"
 if use_ssl:
     SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_HSTS_SECONDS = 31536000 if not use_ssl else 0
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -95,7 +93,6 @@ if use_ssl:
     X_FRAME_OPTIONS = "DENY"
 else:
     SECURE_SSL_REDIRECT = False
-    SECURE_PROXY_SSL_HEADER = None
 
 
 # Default primary key field type

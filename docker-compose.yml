@@ -17,7 +17,7 @@ services:
   web:
     build: ./app
     container_name: echofield_web
-    command: gunicorn echofield.wsgi:application --bind 0.0.0.0:8000 --workers 2 --log-level info
+    command: uv run gunicorn echofield.wsgi:application --bind 0.0.0.0:8000 --workers 2
     env_file:
       - .env
     depends_on:

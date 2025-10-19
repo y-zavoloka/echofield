@@ -1,3 +1,4 @@
-from .posts import PostListView, PostDetailView
+from .post_detail import PostDetailView
+from .post_list import PostListView
 
 __all__ = ["PostListView", "PostDetailView"]
