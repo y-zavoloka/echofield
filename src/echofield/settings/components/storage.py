@@ -24,4 +24,7 @@ def _build_storage() -> tuple[dict[str, object], str, str]:
 
 
 STORAGES, STATIC_URL, MEDIA_URL = _build_storage()
-__all__ = ["STORAGES", "STATIC_URL", "MEDIA_URL"]
+
+MARKDOWNX_MEDIA_PATH = "uploads/%Y/%m/"
+
+__all__ = ["STORAGES", "STATIC_URL", "MEDIA_URL", "MARKDOWNX_MEDIA_PATH"]

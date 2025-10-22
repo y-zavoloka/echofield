@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from markdownx.models import MarkdownxField
 from typing_extensions import Self
 
 
@@ -60,17 +62,15 @@ class Post(models.Model):
         DRAFT = "draft", "Draft"
         PUBLISHED = "published", "Published"
 
-    title = models.CharField(max_length=300)
-    slug = models.SlugField(max_length=320, unique=True)
-    content = models.TextField()
+    title = models.CharField(_("Title"), max_length=300)
+    slug = models.SlugField(_("Slug"), max_length=320, unique=True)
+    content = MarkdownxField(_("Content"), blank=True, null=False)
     status = models.CharField(
-        max_length=10,
-        choices=Status.choices,
-        default=Status.DRAFT,
+        _("Status"), max_length=10, choices=Status.choices, default=Status.DRAFT
     )
-    published_at = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    published_at = models.DateTimeField(_("Published at"), null=True, blank=True)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
 
     objects: models.Manager["Post"] = models.Manager()
     public: PostPublicManager = PostPublicManager()

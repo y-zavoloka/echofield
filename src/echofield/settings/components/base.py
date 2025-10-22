@@ -34,6 +34,7 @@ TEMPLATES = [
     },
 ]
 
+
 __all__ = [
     "BASE_DIR",
     "ROOT_URLCONF",
@@ -41,4 +42,5 @@ __all__ = [
     "DEFAULT_AUTO_FIELD",
     "MIDDLEWARE",
     "TEMPLATES",
+    "TEMPLATE_DIRS",
 ]
