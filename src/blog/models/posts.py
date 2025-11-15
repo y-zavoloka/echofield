@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from markdownx.models import MarkdownxField
 from typing_extensions import Self
 
 
@@ -64,7 +63,7 @@ class Post(models.Model):
 
     title = models.CharField(_("Title"), max_length=300)
     slug = models.SlugField(_("Slug"), max_length=320, unique=True)
-    content = MarkdownxField(_("Content"), blank=True, null=False)
+    content = models.TextField(_("Content"), blank=True, null=False)
     status = models.CharField(
         _("Status"), max_length=10, choices=Status.choices, default=Status.DRAFT
     )

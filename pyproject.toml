@@ -25,13 +25,14 @@ dependencies = [
 dev = [
     "django-environ",
     "ruff",
+    "black>=24.0.0",
     "pytest",
     "pre-commit",
     "django-stubs>=5.2.7",
     "mypy>=1.17",
     "django-stubs[compatible-mypy]>=5.2.7",
 ]
-lint = ["ruff", "pre-commit", "mypy"]
+lint = ["ruff", "black>=24.0.0", "pre-commit", "mypy"]
 test = ["pytest"]
 docs = ["mkdocs"]
 

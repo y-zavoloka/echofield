@@ -42,5 +42,4 @@ __all__ = [
     "DEFAULT_AUTO_FIELD",
     "MIDDLEWARE",
     "TEMPLATES",
-    "TEMPLATE_DIRS",
 ]
