@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Post management" %} — EchoField{% endblock %}
+
+{% block content %}
+  <h2>{% translate "Post management" %}</h2>
+
+  <p>
+    <a href="{% url 'post_create' %}" class="btn-primary">{% translate "New post" %}</a>
+  </p>
+
+  <table class="post-manage-table">
+    <thead>
+      <tr>
+        <th>{% translate "Title" %}</th>
+        <th>{% translate "Published at" %}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+        <tr>
+          <td>{{ post.title }}</td>
+          <td>
+            {% if post.published_at %}
+              {{ post.published_at|date:"d.m.Y H:i" }}
+            {% else %}
+              <span class="text-muted">{% translate "Not scheduled" %}</span>
+            {% endif %}
+          </td>
+          <td class="post-manage-actions">
+            <a href="{% url 'post_edit' post.pk %}">{% translate "Edit" %}</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3">{% translate "No posts yet." %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+    <nav class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">&larr; {% translate "Previous" %}</a>
+      {% endif %}
+
+      <span>{% blocktrans %}Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}{% endblocktrans %}</span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">{% translate "Next" %} &rarr;</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% endblock %}

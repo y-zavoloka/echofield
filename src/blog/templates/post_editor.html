@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% if form.instance.pk %}
+    {% translate "Edit post" %} — EchoField
+  {% else %}
+    {% translate "New post" %} — EchoField
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <h2>
+    {% if form.instance.pk %}
+      {% translate "Edit post" %}
+    {% else %}
+      {% translate "New post" %}
+    {% endif %}
+  </h2>
+
+  <form method="post" class="post-editor-form">
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    <div class="editor-row">
+      <div class="editor-field">
+        {{ form.title_en.label_tag }}
+        {{ form.title_en }}
+        {{ form.title_en.errors }}
+      </div>
+      <div class="editor-field">
+        {{ form.title_uk.label_tag }}
+        {{ form.title_uk }}
+        {{ form.title_uk.errors }}
+      </div>
+    </div>
+
+    <div class="editor-row">
+      <div class="editor-field">
+        {{ form.slug_en.label_tag }}
+        {{ form.slug_en }}
+        {{ form.slug_en.errors }}
+      </div>
+      <div class="editor-field">
+        {{ form.slug_uk.label_tag }}
+        {{ form.slug_uk }}
+        {{ form.slug_uk.errors }}
+      </div>
+    </div>
+
+    <div class="editor-row">
+      <div class="editor-field">
+        {{ form.published_at.label_tag }}
+        {{ form.published_at }}
+        {{ form.published_at.errors }}
+      </div>
+    </div>
+
+    <div class="editor-layout">
+      <div class="editor-columns">
+        <div class="editor-panel">
+          <div class="editor-panel-header">
+            <strong>{% translate "English content (Markdown)" %}</strong>
+          </div>
+          <div class="editor-panel-body">
+            {{ form.content_en.errors }}
+            {{ form.content_en.as_textarea }}
+          </div>
+          <div class="editor-panel-header editor-preview-header">
+            <span>{% translate "Preview" %} · EN</span>
+          </div>
+          <div id="preview-en" class="editor-preview"></div>
+        </div>
+
+        <div class="editor-panel">
+          <div class="editor-panel-header">
+            <strong>{% translate "Ukrainian content (Markdown)" %}</strong>
+          </div>
+          <div class="editor-panel-body">
+            {{ form.content_uk.errors }}
+            {{ form.content_uk.as_textarea }}
+          </div>
+          <div class="editor-panel-header editor-preview-header">
+            <span>{% translate "Preview" %} · UK</span>
+          </div>
+          <div id="preview-uk" class="editor-preview"></div>
+        </div>
+      </div>
+    </div>
+
+    {{ form.slug }} {# keep base slug bound but hidden from the UI #}
+
+    <div class="editor-actions">
+      <button type="submit" class="btn-primary">
+        {% if form.instance.pk %}
+          {% translate "Save changes" %}
+        {% else %}
+          {% translate "Create post" %}
+        {% endif %}
+      </button>
+      <a href="{% url 'post_manage_list' %}" class="btn-secondary">
+        {% translate "Back to editor list" %}
+      </a>
+    </div>
+  </form>
+
+  {# Markdown preview JS - loaded only on this internal editor page #}
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const enField = document.getElementById("id_content_en");
+      const ukField = document.getElementById("id_content_uk");
+      const previewEn = document.getElementById("preview-en");
+      const previewUk = document.getElementById("preview-uk");
+
+      if (!enField || !ukField || !previewEn || !previewUk || typeof marked === "undefined") {
+        return;
+      }
+
+      const render = () => {
+        previewEn.innerHTML = marked.parse(enField.value || "");
+        previewUk.innerHTML = marked.parse(ukField.value || "");
+      };
+
+      enField.addEventListener("input", render);
+      ukField.addEventListener("input", render);
+
+      render();
+    });
+  </script>
+{% endblock %}

@@ -19,6 +19,7 @@ dependencies = [
     "pydantic>=2.12.3",
     "pydantic-settings>=2.11.0",
     "python-dotenv>=1.1.1",
+    "markdown",
 ]
 
 [dependency-groups]
@@ -105,7 +106,6 @@ exclude = [
 [[tool.mypy.overrides]]
 module = [
     "django.*",
-    "django_markdownx.*",
     "django_modeltranslation.*",
     "django_storages.*",
     "boto3.*",

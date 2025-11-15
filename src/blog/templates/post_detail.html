@@ -8,7 +8,7 @@
     {% if post.published_at %}
       <time>{{ post.published_at|date:"d.m.Y H:i" }}</time>
     {% endif %}
-    <div>{{ post.content|safe }}</div>
+    <div>{{ post.content_html|safe }}</div>
   </article>
 
   <p><a href="/">&larr; {% translate "Back to posts" %}</a></p>

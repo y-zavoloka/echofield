@@ -11,6 +11,5 @@ class PostListView(ListView):
     paginate_by: int = 20
 
     def get_queryset(self) -> QuerySet[Post]:
-        return Post.objects.filter(status="published").order_by(
-            "-published_at", "-created_at"
-        )
+        """Return posts that are considered published based on their date only."""
+        return Post.public.published()

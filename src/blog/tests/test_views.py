@@ -22,13 +22,13 @@ def test_post_list_view_shows_only_published_posts(client: Client) -> None:
         published_at=now - timedelta(days=1),
     )
 
-    # Draft and future posts should not be listed
+    # Draft (no date) and future posts should not be listed
     Post.objects.create(
         title="Draft",
         slug="draft-post",
         content="",
         status=Post.Status.DRAFT,
-        published_at=now - timedelta(days=1),
+        published_at=None,
     )
     Post.objects.create(
         title="Future",
@@ -45,8 +45,8 @@ def test_post_list_view_shows_only_published_posts(client: Client) -> None:
     assert response.status_code == 200
     posts = list(response.context["posts"])
 
-    # Only posts with PUBLISHED status should appear, regardless of published_at.
-    assert {p.slug for p in posts} == {"visible-post", "future-post"}
+    # Only posts whose publication date has passed should appear.
+    assert {p.slug for p in posts} == {"visible-post"}
 
 
 @pytest.mark.django_db
@@ -103,3 +103,28 @@ def test_post_detail_view_redirects_cross_language_slug_to_current_language(
     assert response.headers["Location"].endswith(
         reverse("post_detail", kwargs={"slug": "hello-en"})
     )
+
+
+@pytest.mark.django_db
+def test_post_detail_view_returns_404_for_future_publication_date(
+    client: Client,
+) -> None:
+    """Posts with a future publish date should not be publicly accessible."""
+    now = timezone.now()
+
+    post = Post.objects.create(
+        title="Future post",
+        slug="future-base",
+        content="",
+        status=Post.Status.PUBLISHED,
+        published_at=now + timedelta(days=1),
+    )
+    setattr(post, "slug_en", "future-en")
+    setattr(post, "slug_uk", "future-uk")
+    post.save()
+
+    with translation.override("en"):
+        url = reverse("post_detail", kwargs={"slug": "future-en"})
+        response = client.get(url, secure=True)
+
+    assert response.status_code == 404

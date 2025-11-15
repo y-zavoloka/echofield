@@ -1,39 +1,45 @@
+from __future__ import annotations
+
+import re
+
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from markdown import markdown
 from typing_extensions import Self
 
 
 class PostPublicQuerySet(models.QuerySet["Post"]):
     def published(self) -> "Self":
-        """
-        Return posts with 'PUBLISHED' status where the publication date has passed.
+        """Return posts whose publication date has passed.
 
         A post is considered published if:
-        - status == PUBLISHED
-        - published_at is set and less than or equal to current time
+        - ``published_at`` is set, and
+        - ``published_at`` is less than or equal to the current time.
+
+        The ``status`` field is ignored for publication; it is kept only for
+        legacy data and potential editorial hints.
         """
         now = timezone.now()
         return self.filter(
-            status=Post.Status.PUBLISHED,
             published_at__isnull=False,
             published_at__lte=now,
         )
 
     def for_slug(self, slug: str, lang: str | None = None) -> "Self":
-        """
-        Filter posts by their slug, either for a specific language or across all supported slugs.
+        """Filter *published* posts by their slug.
 
         If a language is provided, filters by the slug field for that language (e.g., 'slug_en').
         If no language is provided, searches all available localized slug fields (including 'slug').
         Assumes fields such as slug_en and slug_uk exist for localized slugs.
         """
+        qs: "PostPublicQuerySet" = self.published()
         if lang:
             # Assumes fields like slug_en, slug_uk, etc. If only a single slug field exists, use slug=slug.
             filter_kwargs = {f"slug_{lang}": slug}
-            return self.filter(**filter_kwargs)
-        return self.filter(Q(slug=slug) | Q(slug_en=slug) | Q(slug_uk=slug))
+            return qs.filter(**filter_kwargs)
+        return qs.filter(Q(slug=slug) | Q(slug_en=slug) | Q(slug_uk=slug))
 
 
 class PostPublicManager(models.Manager["Post"]):
@@ -82,3 +88,22 @@ class Post(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    @property
+    def content_html(self) -> str:
+        """Return the post content rendered from Markdown to HTML.
+
+        The raw Markdown is stored in the ``content`` TextField. For rendering,
+        we convert it to HTML on the backend so the public frontend never needs
+        to load any Markdown libraries.
+        """
+
+        if not self.content:
+            return ""
+
+        # Basic backwards-compatibility: if the content already looks like HTML,
+        # don't re-run it through the Markdown renderer.
+        if "<" in self.content and re.search(r"<[a-zA-Z][^>]*>", self.content):
+            return self.content
+
+        return markdown(self.content)
