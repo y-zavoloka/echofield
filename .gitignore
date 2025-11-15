@@ -20,3 +20,15 @@ src/locale/**/*.mo
 
 src/**/staticfiles
 src/**/mediafiles
+
+# VSCode settings
+.vscode/
+
+# Editorconfig
+.editorconfig
+
+*.sqlite3
+
+src/:test-local
+
+bin/

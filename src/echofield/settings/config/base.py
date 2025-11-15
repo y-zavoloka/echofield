@@ -1,0 +1,114 @@
+from __future__ import annotations
+
+from typing import List, Optional
+
+from pydantic import Field, SecretStr, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class AppSettings(BaseSettings):
+    """
+    Typed application settings configuration.
+
+    Settings are read from environment variables or .env file with defaults and validation.
+    All settings can be overridden via environment variables using the same names.
+
+    Example:
+        # In .env file:
+        DEBUG=true
+        SECRET_KEY=your-secret-key-here
+        DATABASE_URL=postgresql://user:pass@localhost/db
+
+        # In code:
+        settings = AppSettings()
+        print(settings.DEBUG)  # True
+    """
+
+    # Pydantic Settings: reads .env file from repository root (adjust path as needed)
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_nested_delimiter="__",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
+    # --- Core Application Settings ---
+    DEBUG: bool = False
+    """Enable debug mode. Should be False in production."""
+
+    SECRET_KEY: SecretStr = SecretStr("changeme")
+    """Django secret key for cryptographic signing. Must be set in production."""
+
+    ALLOWED_HOSTS: List[str] = Field(default_factory=list)
+    """List of allowed hostnames for the application. Required in production."""
+
+    CSRF_TRUSTED_ORIGINS: List[str] = Field(default_factory=list)
+    """List of trusted origins for CSRF protection when using HTTPS."""
+
+    @field_validator("ALLOWED_HOSTS", "CSRF_TRUSTED_ORIGINS", mode="before")
+    @classmethod
+    def _split_comma_separated(cls, value: object) -> List[str] | object:
+        """Allow comma-separated env values in addition to JSON arrays.
+
+        Examples (equivalent):
+        - ALLOWED_HOSTS=example.com,api.example.com
+        - ALLOWED_HOSTS=["example.com", "api.example.com"]
+        """
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",") if item.strip()]
+        return value
+
+    LANGUAGE_CODE: str = "en-us"
+    """Default language code for the application."""
+
+    TIME_ZONE: str = "Europe/Kyiv"
+    """Default timezone for the application."""
+
+    USE_I18N: bool = True
+    """Enable Django's internationalization system."""
+
+    USE_TZ: bool = True
+    """Enable timezone-aware datetimes."""
+
+    # --- SSL / Security Settings ---
+    USE_SSL: bool = False
+    """Enable SSL/HTTPS security settings. Set to True in production with HTTPS."""
+
+    # --- Database Configuration ---
+    DATABASE_URL: Optional[str] = None
+    """Complete database URL (e.g., postgresql://user:pass@host:port/dbname).
+    If provided, takes precedence over individual DB_* settings."""
+
+    DB_NAME: Optional[str] = None
+    """Database name."""
+
+    DB_USER: Optional[str] = None
+    """Database username."""
+
+    DB_PASSWORD: Optional[str] = None
+    """Database password."""
+
+    DB_HOST: str = "db"
+    """Database host. Defaults to 'db' for Docker environments."""
+
+    DB_PORT: int = 5432
+    """Database port. Defaults to 5432 for PostgreSQL."""
+
+    # --- Static/Media Storage (Cloudflare R2 or local) ---
+    USE_R2_STATIC: bool = False
+    """Enable Cloudflare R2 for static file storage. If False, uses local storage."""
+
+    R2_CUSTOM_DOMAIN: Optional[str] = None
+    """Custom domain for R2 bucket (e.g., 'static.example.com')."""
+
+    R2_BUCKET: Optional[str] = None
+    """R2 bucket name for static files."""
+
+    R2_ENDPOINT: Optional[str] = None
+    """R2 endpoint URL (e.g., 'https://account-id.r2.cloudflarestorage.com')."""
+
+    R2_ACCESS_KEY_ID: Optional[str] = None
+    """R2 access key ID for authentication."""
+
+    R2_SECRET_ACCESS_KEY: Optional[str] = None
+    """R2 secret access key for authentication."""

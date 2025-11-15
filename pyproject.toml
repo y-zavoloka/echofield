@@ -1,26 +1,117 @@
 [project]
 name = "echofield"
 version = "0.1.0"
-description = "Add your description here"
+description = "A fast, bilingual personal blog and public notebook — focused on clarity, speed, and longevity."
+authors = [{ name = "Yevhen Zavoloka", email = "yevhen.zavoloka@gmail.com" }]
+keywords = ["django", "blog", "minimal", "bilingual", "web"]
+license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "boto3>=1.40.55",
     "dj-database-url>=3.0.1",
     "django>=5.2.7",
-    "django-markdownx>=4.0.9",
     "django-modeltranslation>=0.19.17",
     "django-storages>=1.14.6",
-    "django-unfold>=0.68.0",
     "gunicorn>=23.0.0",
     "psycopg>=3.2.10",
     "psycopg2-binary>=2.9.11",
+    "pydantic>=2.12.3",
+    "pydantic-settings>=2.11.0",
     "python-dotenv>=1.1.1",
+    "markdown",
 ]
 
 [dependency-groups]
 dev = [
-    "black>=25.9.0",
-    "django-environ>=0.12.0",
-    "ruff>=0.14.0",
+    "django-environ",
+    "ruff",
+    "black>=24.0.0",
+    "pytest",
+    "pytest-django",
+    "pre-commit",
+    "django-stubs>=5.2.7",
+    "mypy>=1.17",
+    "django-stubs[compatible-mypy]>=5.2.7",
 ]
+lint = ["ruff", "black>=24.0.0", "pre-commit", "mypy"]
+test = ["pytest", "pytest-django"]
+docs = ["mkdocs"]
+
+[tool.ruff]
+line-length = 88                        # Set max allowed line length
+target-version = "py312"                # Target Python 3.12 code style and syntax
+respect-gitignore = true                # Do not lint files ignored by .gitignore
+
+# Additional paths to exclude from linting
+extend-exclude = [
+    "migrations",                       # Django migration files
+    "__pycache__",                      # Python cache directories
+    "venv",                             # Virtual environment directory
+]
+
+[tool.ruff.format]
+quote-style = "double"                  # Use double quotes for string literals
+indent-style = "space"                  # Use spaces for indentation (not tabs)
+line-ending = "lf"                      # Use Unix-style line endings
+
+[tool.ruff.lint]
+# Enable specific linting rule categories
+# E: pycodestyle errors, F: pyflakes, W: pycodestyle warnings
+# I: isort import sorting, ANN: type annotations, S: bandit security
+select = [
+    "E",                                # pycodestyle errors
+    "F",                                # pyflakes
+    "W",                                # pycodestyle warnings
+    "I",                                # isort (import sorting)
+    "ANN",                              # flake8-annotations
+    "S",                                # flake8-bandit (security)
+]
+
+# Ignore specific rules
+ignore = [
+    "E501",                             # Line too long (handled by formatter)
+    "ANN101",                           # Don't require type annotation for self
+    "ANN102",                           # Don't require type annotation for cls
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Test files can use 'Any' type annotations and plain asserts more freely
+"tests/*.py" = ["ANN401", "S101"]
+"*/tests/*.py" = ["S101"]
+
+[tool.django-stubs]
+django_settings_module = "echofield.settings"
+strict_settings = true
+
+[tool.mypy]
+# Run with: python -m mypy .
+# Or for specific files: python -m mypy echofield/
+# Make sure Django settings are available: DJANGO_SETTINGS_MODULE=echofield.settings python -m mypy .
+python_version = "3.12"
+plugins = ["mypy_django_plugin.main"]
+disallow_untyped_defs = true
+disallow_any_unimported = true
+strict_optional = true
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+exclude = [
+    "migrations/",
+    "venv/",
+    "__pycache__/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "django.*",
+    "django_modeltranslation.*",
+    "django_storages.*",
+    "boto3.*",
+    "botocore.*",
+    "psycopg.*",
+    "psycopg2.*",
+    "gunicorn.*",
+]
+ignore_missing_imports = true
