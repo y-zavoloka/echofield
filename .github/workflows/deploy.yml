@@ -103,8 +103,8 @@ jobs:
           DB_HOST=db
           DEBUG=False
           SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
-          ALLOWED_HOSTS=echofield.dev,.echofield.dev,static.echofield.dev
-          CSRF_TRUSTED_ORIGINS=https://echofield.dev,https://static.echofield.dev
+          ALLOWED_HOSTS=["echofield.dev", ".echofield.dev", "static.echofield.dev"]
+          CSRF_TRUSTED_ORIGINS=["https://echofield.dev", "https://static.echofield.dev"]
           R2_BUCKET=echofield-static
           R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
           R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
