@@ -1,3 +1,5 @@
+from typing import Any
+
 from django import forms
 
 from ..models import Post
@@ -36,10 +38,16 @@ class PostForm(forms.ModelForm[Post]):
             ),
         }
 
-    def clean(self) -> dict[str, object]:
+    def clean(self) -> dict[str, Any]:
         cleaned = super().clean()
-        if not cleaned.get("content_en") or not cleaned.get("content_uk"):
+        # Ensure both language variants are present; use cleaned_data to avoid None issues.
+        if not self.cleaned_data.get("content_en") or not self.cleaned_data.get(
+            "content_uk"
+        ):
             raise forms.ValidationError("Both language versions are required.")
+        # BaseForm.clean() returns a dict for valid forms; guard for type checkers.
+        if not isinstance(cleaned, dict):
+            raise forms.ValidationError("Invalid cleaned data state.")
         return cleaned
 
     def save(self, commit: bool = True) -> Post:

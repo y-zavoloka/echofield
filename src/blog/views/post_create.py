@@ -27,10 +27,7 @@ class PostCreateView(UserPassesTestMixin, CreateView):
         return self.request.user.is_authenticated and self.request.user.is_superuser
 
     def form_valid(self, form: PostForm) -> HttpResponse:
-        """
-        Set the author of the post to the current user before saving.
-        """
-        form.instance.author = self.request.user
+        """Hook for additional logic before saving a valid form."""
         messages.success(self.request, "Post created successfully!")
         return super().form_valid(form)
 

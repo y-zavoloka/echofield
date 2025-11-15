@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import timedelta
+
 import pytest
 from django.test.client import Client
 from django.urls import reverse
@@ -17,7 +19,7 @@ def test_post_list_view_shows_only_published_posts(client: Client) -> None:
         slug="visible-post",
         content="",
         status=Post.Status.PUBLISHED,
-        published_at=now - timezone.timedelta(days=1),
+        published_at=now - timedelta(days=1),
     )
 
     # Draft and future posts should not be listed
@@ -26,18 +28,19 @@ def test_post_list_view_shows_only_published_posts(client: Client) -> None:
         slug="draft-post",
         content="",
         status=Post.Status.DRAFT,
-        published_at=now - timezone.timedelta(days=1),
+        published_at=now - timedelta(days=1),
     )
     Post.objects.create(
         title="Future",
         slug="future-post",
         content="",
         status=Post.Status.PUBLISHED,
-        published_at=now + timezone.timedelta(days=1),
+        published_at=now + timedelta(days=1),
     )
 
     url = reverse("post_list")
-    response = client.get(url)
+    # Use secure requests so tests pass regardless of SECURE_SSL_REDIRECT.
+    response = client.get(url, secure=True)
 
     assert response.status_code == 200
     posts = list(response.context["posts"])
@@ -57,7 +60,7 @@ def test_post_detail_view_uses_canonical_slug_for_current_language(
         slug="base-slug",
         content="",
         status=Post.Status.PUBLISHED,
-        published_at=now - timezone.timedelta(days=1),
+        published_at=now - timedelta(days=1),
     )
     setattr(post, "slug_en", "hello-en")
     setattr(post, "slug_uk", "hello-uk")
@@ -65,7 +68,8 @@ def test_post_detail_view_uses_canonical_slug_for_current_language(
 
     with translation.override("en"):
         url = reverse("post_detail", kwargs={"slug": "hello-en"})
-        response = client.get(url)
+        # Use secure request to avoid SSL upgrade redirects in tests.
+        response = client.get(url, secure=True)
 
     assert response.status_code == 200
     assert response.context["post"].pk == post.pk
@@ -82,7 +86,7 @@ def test_post_detail_view_redirects_cross_language_slug_to_current_language(
         slug="base-slug",
         content="",
         status=Post.Status.PUBLISHED,
-        published_at=now - timezone.timedelta(days=1),
+        published_at=now - timedelta(days=1),
     )
     setattr(post, "slug_en", "hello-en")
     setattr(post, "slug_uk", "hello-uk")
@@ -91,7 +95,11 @@ def test_post_detail_view_redirects_cross_language_slug_to_current_language(
     # Active language is English, but user requests Ukrainian slug.
     with translation.override("en"):
         url = reverse("post_detail", kwargs={"slug": "hello-uk"})
-        response = client.get(url)
+        # Secure request so any SSL redirect does not mask our cross-language redirect.
+        response = client.get(url, secure=True)
 
     assert response.status_code == 301
-    assert response.url == reverse("post_detail", kwargs={"slug": "hello-en"})
+    # Compare only the path component to avoid scheme/host differences.
+    assert response.headers["Location"].endswith(
+        reverse("post_detail", kwargs={"slug": "hello-en"})
+    )

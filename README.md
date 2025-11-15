@@ -2,7 +2,7 @@
 
 > A fast, bilingual (uk/en) personal blog and public notebook — built for clarity, speed, and long-term maintainability.
 
-EchoField is a Django-based publishing platform designed around **human-first content**, **server-rendered pages**, and **clean CSS** with almost no JavaScript.  
+EchoField is a Django-based publishing platform designed around **human-first content**, **server-rendered pages**, and **clean CSS** with almost no JavaScript.
 It’s a living project: part blog, part knowledge base, part digital garden.
 
 ---
@@ -18,10 +18,10 @@ It’s a living project: part blog, part knowledge base, part digital garden.
 ---
 
 ### 🧰 Tech stack
-- Django 5 + PostgreSQL 18  
-- Gunicorn + Nginx (Docker)  
-- Cloudflare R2 storage  
-- Ruff, pytest, pre-commit via uv  
+- Django 5 + PostgreSQL 18
+- Gunicorn + Nginx (Docker)
+- Cloudflare R2 storage
+- Ruff, pytest, pre-commit via uv
 
 ---
 

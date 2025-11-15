@@ -1,8 +1,8 @@
 # src/echofield/settings/components/storage.py
 from __future__ import annotations
 
-from echofield.settings.config import cfg
 from echofield.settings.components.base import BASE_DIR
+from echofield.settings.config import cfg
 
 
 def _build_storage() -> tuple[dict[str, object], str, str]:

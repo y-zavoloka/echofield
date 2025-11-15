@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import timedelta
+
 import pytest
 from django.utils import timezone
 
@@ -16,7 +18,7 @@ def test_post_public_published_filters_by_status_and_date() -> None:
         slug="past-published",
         content="",
         status=Post.Status.PUBLISHED,
-        published_at=now - timezone.timedelta(days=1),
+        published_at=now - timedelta(days=1),
     )
 
     # Published in the future -> should NOT be included
@@ -25,7 +27,7 @@ def test_post_public_published_filters_by_status_and_date() -> None:
         slug="future-published",
         content="",
         status=Post.Status.PUBLISHED,
-        published_at=now + timezone.timedelta(days=1),
+        published_at=now + timedelta(days=1),
     )
 
     # Draft with a past published_at -> should NOT be included
@@ -34,7 +36,7 @@ def test_post_public_published_filters_by_status_and_date() -> None:
         slug="draft-post",
         content="",
         status=Post.Status.DRAFT,
-        published_at=now - timezone.timedelta(days=1),
+        published_at=now - timedelta(days=1),
     )
 
     qs = Post.public.published()
