@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from echofield.settings.config import cfg
+from echofield.settings.components.base import BASE_DIR
 
 
 def _build_storage() -> tuple[dict[str, object], str, str]:
@@ -25,6 +26,18 @@ def _build_storage() -> tuple[dict[str, object], str, str]:
 
 STORAGES, STATIC_URL, MEDIA_URL = _build_storage()
 
+# File-system roots for local static and media when not using R2.
+# These are still required by Django even if static/media are served via R2.
+STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_ROOT = BASE_DIR / "media"
+
 MARKDOWNX_MEDIA_PATH = "uploads/%Y/%m/"
 
-__all__ = ["STORAGES", "STATIC_URL", "MEDIA_URL", "MARKDOWNX_MEDIA_PATH"]
+__all__ = [
+    "STORAGES",
+    "STATIC_URL",
+    "MEDIA_URL",
+    "STATIC_ROOT",
+    "MEDIA_ROOT",
+    "MARKDOWNX_MEDIA_PATH",
+]

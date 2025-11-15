@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -44,6 +44,19 @@ class AppSettings(BaseSettings):
 
     CSRF_TRUSTED_ORIGINS: List[str] = Field(default_factory=list)
     """List of trusted origins for CSRF protection when using HTTPS."""
+
+    @field_validator("ALLOWED_HOSTS", "CSRF_TRUSTED_ORIGINS", mode="before")
+    @classmethod
+    def _split_comma_separated(cls, value: object) -> List[str] | object:
+        """Allow comma-separated env values in addition to JSON arrays.
+
+        Examples (equivalent):
+        - ALLOWED_HOSTS=example.com,api.example.com
+        - ALLOWED_HOSTS=["example.com", "api.example.com"]
+        """
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",") if item.strip()]
+        return value
 
     LANGUAGE_CODE: str = "en-us"
     """Default language code for the application."""

@@ -1,14 +1,23 @@
 # ---------- Base ----------
-FROM python:3.12-slim
+FROM python:3.12-slim AS base
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 ENV UV_SYSTEM_PYTHON=1
 
 WORKDIR /app
 
+# Make src/ imports (like `echofield`) work without installing the project as a package
+ENV PYTHONPATH=/app/src
+
+# Install curl for fetching uv
+RUN apt-get update && apt-get install -y curl ca-certificates && rm -rf /var/lib/apt/lists/*
+
 # Install uv (replaces pip/venv/poetry)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Ensure uv (installed into /root/.local/bin) is on PATH
+ENV PATH="/root/.local/bin:${PATH}"
 
 # Copy only dependency files first
 COPY pyproject.toml uv.lock* ./
@@ -22,17 +31,15 @@ FROM base AS build
 # Copy project code
 COPY . .
 
-# Collect static assets if needed
-RUN uv run python manage.py collectstatic --noinput
+# Collect static assets
+RUN uv run python src/manage.py collectstatic --noinput
 
 # ---------- Runtime ----------
-FROM python:3.11-slim
+FROM base AS runtime
 
 WORKDIR /app
-ENV PYTHONUNBUFFERED=1
 
-# Copy env + installed deps
-COPY --from=build /root/.cache/uv /root/.cache/uv
+# Copy project code (including collected static files) from build stage
 COPY --from=build /app /app
 
 # Expose Django port

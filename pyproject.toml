@@ -27,13 +27,14 @@ dev = [
     "ruff",
     "black>=24.0.0",
     "pytest",
+    "pytest-django",
     "pre-commit",
     "django-stubs>=5.2.7",
     "mypy>=1.17",
     "django-stubs[compatible-mypy]>=5.2.7",
 ]
 lint = ["ruff", "black>=24.0.0", "pre-commit", "mypy"]
-test = ["pytest"]
+test = ["pytest", "pytest-django"]
 docs = ["mkdocs"]
 
 [tool.ruff]
@@ -73,8 +74,9 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Test files can use 'Any' type annotations more freely
-"tests/*.py" = ["ANN401"]
+# Test files can use 'Any' type annotations and plain asserts more freely
+"tests/*.py" = ["ANN401", "S101"]
+"*/tests/*.py" = ["S101"]
 
 [tool.django-stubs]
 django_settings_module = "echofield.settings"
