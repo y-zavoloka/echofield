@@ -3,7 +3,7 @@
 {% get_available_languages as LANGUAGES %}
 
 <!doctype html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" data-theme="latte">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,19 +12,27 @@
 </head>
 <body>
   <header>
-    <div class="container">
-      <h1><a href="/">EchoField</a></h1>
+    <div class="container header-inner">
+      <h1 class="site-title"><a href="/">EchoField</a></h1>
 
-      <nav id="lang-nav">
+      <nav id="lang-nav" class="lang-nav" aria-label="{% trans 'Language' %}">
         <form id="lang-form" action="{% url 'set_language' %}" method="post">
           {% csrf_token %}
-          <select name="language" id="lang-switcher">
+          <input type="hidden" name="language" id="lang-input" value="{{ LANGUAGE_CODE }}">
+
+          <div class="lang-switcher" role="radiogroup">
             {% for lang_code, lang_name in LANGUAGES %}
-              <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>
-                {{ lang_name }}
-              </option>
+              <button
+                type="button"
+                class="lang-pill{% if lang_code == LANGUAGE_CODE %} is-active{% endif %}"
+                data-lang="{{ lang_code }}"
+                role="radio"
+                aria-checked="{% if lang_code == LANGUAGE_CODE %}true{% else %}false{% endif %}"
+              >
+                {{ lang_code|upper }}
+              </button>
             {% endfor %}
-          </select>
+          </div>
         </form>
       </nav>
     </div>
