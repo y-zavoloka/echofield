@@ -18,14 +18,14 @@ services:
     build: .
     image: echofield-web
     container_name: echofield_web
-    command: uv run gunicorn echofield.wsgi:application --bind 0.0.0.0:8000 --workers 2
+    # Use the CMD from the Dockerfile (gunicorn)
     env_file:
       - .env
     depends_on:
       - db
     restart: always
     ports:
-      - "8000:8000"
+      - "8001:8000"
 
 volumes:
   postgres_data:
