@@ -447,17 +447,17 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 
         for i in range(count):
             # Randomize slugs to avoid conflicts
-            base_slug_en = f"bulk-post-{i+1}"
-            base_slug_uk = f"masovyi-post-{i+1}"
+            base_slug_en = f"bulk-post-{i + 1}"
+            base_slug_uk = f"masovyi-post-{i + 1}"
             slug_en = self._randomize_slug(base_slug_en, seed)
             slug_uk = self._randomize_slug(base_slug_uk, seed)
 
             Post.objects.create(
-                title=f"Bulk Post {i+1}",
+                title=f"Bulk Post {i + 1}",
                 slug=slug_en,
                 content=lorem_en,
-                title_en=f"Bulk Post {i+1}",
-                title_uk=f"Масовий пост {i+1}",
+                title_en=f"Bulk Post {i + 1}",
+                title_uk=f"Масовий пост {i + 1}",
                 slug_en=slug_en,
                 slug_uk=slug_uk,
                 content_en=lorem_en,
