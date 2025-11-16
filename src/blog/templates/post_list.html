@@ -6,8 +6,15 @@
   <h2>{% translate "Latest posts" %}</h2>
   {% for post in posts %}
     <article>
+      {% if post.featured_image %}
+        <div class="post-image-container">
+          <a class="post-featured-image-link" href="{% url 'post_detail' post.slug %}">
+            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="post-list-image" loading="lazy">
+          </a>
+        </div>
+      {% endif %}
       <h3>
-        <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
+        <a class="post-title-link" href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
       </h3>
       {% if post.published_at %}
         <time>{{ post.published_at|date:"d.m.Y" }}</time>
@@ -18,16 +25,60 @@
   {% endfor %}
 
   {% if is_paginated %}
-    <nav class="pagination">
-      {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">&larr; {% translate "Previous" %}</a>
-      {% endif %}
+    <nav class="pagination" aria-label="{% translate 'Pagination' %}">
+      <div class="pagination-controls">
+        {% if page_obj.has_previous %}
+          <a href="?page=1" class="pagination-link">{% translate "First" %}</a>
+          <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">&larr; {% translate "Previous" %}</a>
+        {% else %}
+          <span class="pagination-link disabled">{% translate "First" %}</span>
+          <span class="pagination-link disabled">&larr; {% translate "Previous" %}</span>
+        {% endif %}
+      </div>
 
-      <span>{% blocktrans %}Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}{% endblocktrans %}</span>
+      <div class="pagination-pages">
+        {% if page_obj.paginator.num_pages <= 7 %}
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <span class="pagination-page current">{{ num }}</span>
+            {% else %}
+              <a href="?page={{ num }}" class="pagination-page">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% if page_obj.number > 1 %}
+            <a href="?page=1" class="pagination-page">1</a>
+          {% endif %}
+          {% if page_obj.number > 4 %}
+            <span class="pagination-ellipsis">...</span>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+            {% if num >= page_obj.number|add:"-1" and num <= page_obj.number|add:"1" %}
+              {% if page_obj.number == num %}
+                <span class="pagination-page current">{{ num }}</span>
+              {% else %}
+                <a href="?page={{ num }}" class="pagination-page">{{ num }}</a>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.number < page_obj.paginator.num_pages|add:"-3" %}
+            <span class="pagination-ellipsis">...</span>
+          {% endif %}
+          {% if page_obj.number < page_obj.paginator.num_pages %}
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-page">{{ page_obj.paginator.num_pages }}</a>
+          {% endif %}
+        {% endif %}
+      </div>
 
-      {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">{% translate "Next" %} &rarr;</a>
-      {% endif %}
+      <div class="pagination-controls">
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">{% translate "Next" %} &rarr;</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link">{% translate "Last" %}</a>
+        {% else %}
+          <span class="pagination-link disabled">{% translate "Next" %} &rarr;</span>
+          <span class="pagination-link disabled">{% translate "Last" %}</span>
+        {% endif %}
+      </div>
     </nav>
   {% endif %}
 {% endblock %}

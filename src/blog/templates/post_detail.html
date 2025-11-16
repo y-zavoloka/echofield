@@ -8,6 +8,11 @@
     {% if post.published_at %}
       <time>{{ post.published_at|date:"d.m.Y H:i" }}</time>
     {% endif %}
+    {% if post.featured_image %}
+      <div class="post-image-container">
+        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="post-image" loading="lazy">
+      </div>
+    {% endif %}
     <div>{{ post.content_html|safe }}</div>
   </article>
 

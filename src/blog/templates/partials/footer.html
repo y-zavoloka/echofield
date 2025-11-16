@@ -1,0 +1,148 @@
+{% load static i18n %}
+
+<footer>
+  <div class="container">
+    <button
+      type="button"
+      id="theme-switcher-trigger"
+      class="theme-switcher-trigger"
+      aria-label="{% trans 'Change theme' %}"
+      title="{% trans 'Change theme' %}"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2"></path>
+        <path d="M12 20v2"></path>
+        <path d="m4.93 4.93 1.41 1.41"></path>
+        <path d="m17.66 17.66 1.41 1.41"></path>
+        <path d="M2 12h2"></path>
+        <path d="M20 12h2"></path>
+        <path d="m6.34 17.66-1.41 1.41"></path>
+        <path d="m19.07 4.93-1.41 1.41"></path>
+      </svg>
+    </button>
+    <p>&copy; {{ now|date:"Y" }} EchoField</p>
+  </div>
+</footer>
+
+<dialog id="theme-switcher-modal" class="theme-switcher-modal" aria-labelledby="theme-switcher-title">
+  <div class="theme-switcher-modal-content">
+    <div class="theme-switcher-modal-header">
+      <h2 id="theme-switcher-title">{% trans 'Choose Theme' %}</h2>
+      <button
+        type="button"
+        class="theme-switcher-close"
+        aria-label="{% trans 'Close' %}"
+        title="{% trans 'Close' %}"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <nav id="theme-switcher" aria-label="{% trans 'Theme' %}">
+      <div class="theme-switcher-grid" role="radiogroup">
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="latte"
+          role="radio"
+          aria-checked="false"
+          title="Catppuccin Latte"
+        >
+          <span class="theme-option-name">Latte</span>
+          <span class="theme-option-subtitle">Catppuccin</span>
+        </button>
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="frappe"
+          role="radio"
+          aria-checked="false"
+          title="Catppuccin Frappe"
+        >
+          <span class="theme-option-name">Frappe</span>
+          <span class="theme-option-subtitle">Catppuccin</span>
+        </button>
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="macchiato"
+          role="radio"
+          aria-checked="false"
+          title="Catppuccin Macchiato"
+        >
+          <span class="theme-option-name">Macchiato</span>
+          <span class="theme-option-subtitle">Catppuccin</span>
+        </button>
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="mocha"
+          role="radio"
+          aria-checked="false"
+          title="Catppuccin Mocha"
+        >
+          <span class="theme-option-name">Mocha</span>
+          <span class="theme-option-subtitle">Catppuccin</span>
+        </button>
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="nord"
+          role="radio"
+          aria-checked="false"
+          title="Nord"
+        >
+          <span class="theme-option-name">Nord</span>
+          <span class="theme-option-subtitle">Nord</span>
+        </button>
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="tokyo-day"
+          role="radio"
+          aria-checked="false"
+          title="Tokyo Night Day"
+        >
+          <span class="theme-option-name">Tokyo Day</span>
+          <span class="theme-option-subtitle">Tokyo Night</span>
+        </button>
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="tokyo-night"
+          role="radio"
+          aria-checked="false"
+          title="Tokyo Night"
+        >
+          <span class="theme-option-name">Tokyo Night</span>
+          <span class="theme-option-subtitle">Tokyo Night</span>
+        </button>
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="gruvbox-light"
+          role="radio"
+          aria-checked="false"
+          title="Gruvbox Light"
+        >
+          <span class="theme-option-name">Gruvbox Light</span>
+          <span class="theme-option-subtitle">Gruvbox</span>
+        </button>
+        <button
+          type="button"
+          class="theme-option"
+          data-theme-id="gruvbox-dark"
+          role="radio"
+          aria-checked="false"
+          title="Gruvbox Dark"
+        >
+          <span class="theme-option-name">Gruvbox Dark</span>
+          <span class="theme-option-subtitle">Gruvbox</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</dialog>

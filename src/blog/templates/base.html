@@ -1,53 +1,24 @@
 {% load static i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-{% get_available_languages as LANGUAGES %}
 
 <!doctype html>
-<html lang="{{ LANGUAGE_CODE }}" data-theme="latte">
+<html lang="{{ LANGUAGE_CODE }}" data-theme="macchiato">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}EchoField{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'blog/themes.css' %}">
   <link rel="stylesheet" href="{% static 'blog/style.css' %}">
 </head>
 <body>
-  <header>
-    <div class="container header-inner">
-      <h1 class="site-title"><a href="/">EchoField</a></h1>
-
-      <nav id="lang-nav" class="lang-nav" aria-label="{% trans 'Language' %}">
-        <form id="lang-form" action="{% url 'set_language' %}" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="language" id="lang-input" value="{{ LANGUAGE_CODE }}">
-
-          <div class="lang-switcher" role="radiogroup">
-            {% for lang_code, lang_name in LANGUAGES %}
-              <button
-                type="button"
-                class="lang-pill{% if lang_code == LANGUAGE_CODE %} is-active{% endif %}"
-                data-lang="{{ lang_code }}"
-                role="radio"
-                aria-checked="{% if lang_code == LANGUAGE_CODE %}true{% else %}false{% endif %}"
-              >
-                {{ lang_code|upper }}
-              </button>
-            {% endfor %}
-          </div>
-        </form>
-      </nav>
-    </div>
-  </header>
+  {% include "partials/header.html" %}
 
   <main class="container">
     {% block content %}{% endblock %}
   </main>
 
-  <footer>
-    <div class="container">
-      <p>&copy; {{ now|date:"Y" }} EchoField</p>
-    </div>
-  </footer>
+  {% include "partials/footer.html" %}
 
-  <script src="{% static 'blog/lang-switcher.js' %}"></script>
+  <script src="{% static 'blog/main.js' %}"></script>
 </body>
 </html>

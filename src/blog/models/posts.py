@@ -70,6 +70,9 @@ class Post(models.Model):
     title = models.CharField(_("Title"), max_length=300)
     slug = models.SlugField(_("Slug"), max_length=320, unique=True)
     content = models.TextField(_("Content"), blank=True, null=False)
+    featured_image = models.ImageField(
+        _("Featured image"), upload_to="posts/featured/", null=True, blank=True
+    )
     status = models.CharField(
         _("Status"), max_length=10, choices=Status.choices, default=Status.DRAFT
     )
