@@ -44,7 +44,7 @@
     --shadow-soft: 0 8px 16px rgba(15, 23, 42, 0.06);
 
     --radius-sm: 6px;
-    --radius-pill: 999px;
+    --radius-pill: 9999px;
     --transition-fast: 150ms ease-out;
 }
 
