@@ -19,7 +19,7 @@ def _build_storage() -> tuple[dict[str, object], str, str]:
         cdn = cfg.R2_CUSTOM_DOMAIN or "static.echofield.dev"
 
         # Map R2-specific settings to the AWS_* variables expected by
-        # django-storages' S3Boto3Storage backend.
+        # django-storages' S3Boto3Storage backend (used for media only).
         global AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
         global AWS_STORAGE_BUCKET_NAME, AWS_S3_ENDPOINT_URL
         global AWS_S3_REGION_NAME, AWS_S3_CUSTOM_DOMAIN
@@ -32,14 +32,12 @@ def _build_storage() -> tuple[dict[str, object], str, str]:
         AWS_S3_CUSTOM_DOMAIN = cfg.R2_CUSTOM_DOMAIN or None
 
         storages: dict[str, object] = {
-            # Static files go to R2 under the "static/" prefix.
+            # Static files stay on the local filesystem and are served via nginx
+            # from /static/ on the app container.
             "staticfiles": {
-                "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-                "OPTIONS": {
-                    "location": "static",
-                },
+                "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
             },
-            # Default file storage (uploads) also goes to R2 under "media/".
+            # Default file storage (uploads) goes to R2 under "media/".
             "default": {
                 "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
                 "OPTIONS": {
@@ -47,7 +45,8 @@ def _build_storage() -> tuple[dict[str, object], str, str]:
                 },
             },
         }
-        return storages, f"https://{cdn}/static/", f"https://{cdn}/media/"
+        # STATIC_URL stays local; MEDIA_URL points at the CDN domain.
+        return storages, "/static/", f"https://{cdn}/media/"
 
     storages = {
         "staticfiles": {
