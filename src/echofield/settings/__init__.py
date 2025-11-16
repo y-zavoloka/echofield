@@ -50,8 +50,16 @@ for _m in _MODULES:
 # Base constants from cfg that don't live in components
 SECRET_KEY = cfg.SECRET_KEY.get_secret_value()
 DEBUG = cfg.DEBUG
-ALLOWED_HOSTS = cfg.ALLOWED_HOSTS
-CSRF_TRUSTED_ORIGINS = cfg.CSRF_TRUSTED_ORIGINS
+
+
+def _split_csv(value: str | None) -> list[str]:
+    if not value:
+        return []
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+ALLOWED_HOSTS = _split_csv(cfg.ALLOWED_HOSTS)
+CSRF_TRUSTED_ORIGINS = _split_csv(cfg.CSRF_TRUSTED_ORIGINS)
 
 # Clean up private names (but keep import_module as it's used in _export_from)
-del _export_from, _MODULES, _m, _ENV
+del _export_from, _MODULES, _m, _ENV, _split_csv

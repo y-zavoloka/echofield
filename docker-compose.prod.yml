@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  web:
+    # Use the image built and pushed to GHCR by GitHub Actions
+    image: ghcr.io/echo/echofield:latest
+    # Disable any build context in this override so prod never rebuilds locally
+    build: null

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Optional
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -39,24 +39,12 @@ class AppSettings(BaseSettings):
     SECRET_KEY: SecretStr = SecretStr("changeme")
     """Django secret key for cryptographic signing. Must be set in production."""
 
-    ALLOWED_HOSTS: List[str] = Field(default_factory=list)
-    """List of allowed hostnames for the application. Required in production."""
+    # Raw comma-separated values; Django settings module will split to lists.
+    ALLOWED_HOSTS: Optional[str] = Field(default=None)
+    """Comma-separated list of allowed hostnames (e.g. "example.com,.example.com")."""
 
-    CSRF_TRUSTED_ORIGINS: List[str] = Field(default_factory=list)
-    """List of trusted origins for CSRF protection when using HTTPS."""
-
-    @field_validator("ALLOWED_HOSTS", "CSRF_TRUSTED_ORIGINS", mode="before")
-    @classmethod
-    def _split_comma_separated(cls, value: object) -> List[str] | object:
-        """Allow comma-separated env values in addition to JSON arrays.
-
-        Examples (equivalent):
-        - ALLOWED_HOSTS=example.com,api.example.com
-        - ALLOWED_HOSTS=["example.com", "api.example.com"]
-        """
-        if isinstance(value, str):
-            return [item.strip() for item in value.split(",") if item.strip()]
-        return value
+    CSRF_TRUSTED_ORIGINS: Optional[str] = Field(default=None)
+    """Comma-separated list of trusted origins (e.g. "https://a.com,https://b.com")."""
 
     LANGUAGE_CODE: str = "en-us"
     """Default language code for the application."""
