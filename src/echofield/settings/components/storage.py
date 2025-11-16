@@ -26,10 +26,11 @@ def _build_storage() -> tuple[dict[str, object], str, str]:
 
 STORAGES, STATIC_URL, MEDIA_URL = _build_storage()
 
-# File-system roots for local static and media when not using R2.
-# These are still required by Django even if static/media are served via R2.
-STATIC_ROOT = BASE_DIR / "staticfiles"
-MEDIA_ROOT = BASE_DIR / "media"
+# File-system roots for local static and media.
+# We keep them at the project root so they are available at /app/static and /app/media
+# inside the Docker container, matching the nginx aliases.
+STATIC_ROOT = BASE_DIR.parent.parent / "static"
+MEDIA_ROOT = BASE_DIR.parent.parent / "media"
 
 MARKDOWNX_MEDIA_PATH = "uploads/%Y/%m/"
 
