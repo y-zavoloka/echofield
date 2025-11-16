@@ -113,6 +113,7 @@ jobs:
           R2_CUSTOM_DOMAIN=static.echofield.dev
           USE_R2_STATIC=True
           USE_SSL=True
+          IMAGE_TAG=${{ github.sha }}
           EOF
 
       - name: Prepare deploy directory
@@ -156,6 +157,7 @@ jobs:
 
             # Set variables
             IMAGE_NAME="${{ env.IMAGE_NAME }}"
+            IMAGE_TAG="${{ github.sha }}"
 
             # Navigate to deployment directory
             cd /opt/echofield
@@ -169,9 +171,9 @@ jobs:
             # Login to GHCR
             echo "${{ github.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Pull the latest image
-            echo "Pulling Docker image: $IMAGE_NAME:latest"
-            docker pull $IMAGE_NAME:latest
+            # Pull the image for this commit
+            echo "Pulling Docker image: $IMAGE_NAME:$IMAGE_TAG"
+            docker pull $IMAGE_NAME:$IMAGE_TAG
 
             # Stop existing containers
             echo "Stopping existing containers..."
