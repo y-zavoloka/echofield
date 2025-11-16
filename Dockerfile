@@ -31,8 +31,8 @@ FROM base AS build
 # Copy project code
 COPY . .
 
-# Collect static assets
-RUN uv run python src/manage.py collectstatic --noinput
+# NOTE: We no longer run collectstatic at build time; it is executed on the
+# production host inside the running container so it can access R2 credentials.
 
 # ---------- Runtime ----------
 FROM base AS runtime

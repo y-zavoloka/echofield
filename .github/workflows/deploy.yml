@@ -196,6 +196,12 @@ jobs:
               exit 1
             fi
 
+            # Run collectstatic inside the running web container so it can
+            # upload static assets to Cloudflare R2 using .env credentials.
+            echo "Running collectstatic inside web container..."
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml exec web \
+              uv run python src/manage.py collectstatic --noinput
+
             echo "Deployment completed successfully"
 
             # Clean up old backup
