@@ -34,6 +34,7 @@ class PostForm(forms.ModelForm):
             "title_uk",
             "content_en",
             "content_uk",
+            "featured_image",
             "status",
             "published_at",
         ]

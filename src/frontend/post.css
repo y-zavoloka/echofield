@@ -1,0 +1,25 @@
+/* Post styles */
+
+.post-image-container {
+  margin-bottom: 1rem;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+.post-featured-image-link {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+.post-title-link {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}

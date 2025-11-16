@@ -32,7 +32,7 @@ repos:
         entry: sh
         language: system
         pass_filenames: false
-        stages: [push]
+        stages: [pre-push]
         args:
           - -c
           - "PYTHONPATH=src TEST_DATABASE_URL=sqlite:///./.test_db.sqlite3 uv run pytest"
@@ -42,7 +42,7 @@ repos:
         entry: sh
         language: system
         pass_filenames: false
-        stages: [push]
+        stages: [pre-push]
         args:
           - -c
           - "PYTHONPATH=src DJANGO_SETTINGS_MODULE=echofield.settings TEST_DATABASE_URL=sqlite:///./.test_db.sqlite3 uv run mypy src"

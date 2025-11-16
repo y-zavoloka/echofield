@@ -55,6 +55,16 @@
         {{ form.published_at }}
         {{ form.published_at.errors }}
       </div>
+      <div class="editor-field">
+        {{ form.featured_image.label_tag }}
+        {{ form.featured_image }}
+        {{ form.featured_image.errors }}
+        {% if form.instance.featured_image %}
+          <div class="image-preview-container">
+            <img src="{{ form.instance.featured_image.url }}" alt="Current featured image" class="image-preview">
+          </div>
+        {% endif %}
+      </div>
     </div>
 
     <div class="editor-layout">

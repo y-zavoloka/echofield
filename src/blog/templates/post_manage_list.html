@@ -10,6 +10,10 @@
     <a href="{% url 'post_create' %}" class="btn-primary">{% translate "New post" %}</a>
   </p>
 
+  <p class="text-muted" style="font-size: 0.9rem; margin-top: 0.5rem;">
+    {% translate "Tip: Run 'python src/manage.py create_fixtures --count 10 --bulk 100' to generate sample posts." %}
+  </p>
+
   <table class="post-manage-table">
     <thead>
       <tr>

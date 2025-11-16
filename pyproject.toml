@@ -20,6 +20,7 @@ dependencies = [
     "pydantic-settings>=2.11.0",
     "python-dotenv>=1.1.1",
     "markdown",
+    "Pillow"
 ]
 
 [dependency-groups]
@@ -79,6 +80,7 @@ ignore = [
 # Test files can use 'Any' type annotations and plain asserts more freely
 "tests/*.py" = ["ANN401", "S101"]
 "*/tests/*.py" = ["S101"]
+"src/blog/management/commands/create_fixtures.py" = ["S311"]
 
 [tool.django-stubs]
 django_settings_module = "echofield.settings"

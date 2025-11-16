@@ -32,3 +32,15 @@ src/**/mediafiles
 src/:test-local
 
 bin/
+
+# Node.js
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build artifacts
+src/**/static/**/*.js
+src/**/static/**/*.css
+
+tmp

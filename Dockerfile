@@ -28,8 +28,19 @@ RUN uv sync --no-dev
 # ---------- Build ----------
 FROM base AS build
 
+# Install Node.js for frontend build
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copy project code
 COPY . .
+
+# Build frontend assets
+RUN if [ -f package.json ]; then \
+      npm ci && \
+      npm run build; \
+    fi
 
 # NOTE: We no longer run collectstatic at build time; it is executed on the
 # production host inside the running container so it can access R2 credentials.
