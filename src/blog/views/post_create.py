@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseRedirect
@@ -6,6 +8,8 @@ from django.views.generic import CreateView, ListView, UpdateView
 
 from ..forms.post import PostForm
 from ..models import Post
+
+logger = logging.getLogger(__name__)
 
 
 class SuperuserRequiredMixin(UserPassesTestMixin):
@@ -53,8 +57,19 @@ class PostCreateView(SuperuserRequiredMixin, CreateView):
     success_url = reverse_lazy("post_manage_list")
 
     def form_valid(self, form: PostForm) -> HttpResponse:  # type: ignore[override]
+        response = super().form_valid(form)
+        user = self.request.user
+        logger.info(
+            "Post created",
+            extra={
+                "post_id": getattr(self.object, "id", None),
+                "post_slug": getattr(self.object, "slug", None),
+                "user_id": getattr(user, "id", None) if user.is_authenticated else None,
+                "user_username": user.get_username() if user.is_authenticated else None,
+            },
+        )
         messages.success(self.request, "Post created successfully!")
-        return super().form_valid(form)
+        return response
 
 
 class PostUpdateView(SuperuserRequiredMixin, UpdateView):
@@ -66,5 +81,16 @@ class PostUpdateView(SuperuserRequiredMixin, UpdateView):
     success_url = reverse_lazy("post_manage_list")
 
     def form_valid(self, form: PostForm) -> HttpResponse:  # type: ignore[override]
+        response = super().form_valid(form)
+        user = self.request.user
+        logger.info(
+            "Post updated",
+            extra={
+                "post_id": getattr(self.object, "id", None),
+                "post_slug": getattr(self.object, "slug", None),
+                "user_id": getattr(user, "id", None) if user.is_authenticated else None,
+                "user_username": user.get_username() if user.is_authenticated else None,
+            },
+        )
         messages.success(self.request, "Post updated successfully!")
-        return super().form_valid(form)
+        return response
