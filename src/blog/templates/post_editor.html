@@ -20,7 +20,7 @@
 
   <form method="post" class="post-editor-form">
     {% csrf_token %}
-
+    {{ form.errors}}
     {{ form.non_field_errors }}
 
     <div class="editor-row">
@@ -98,8 +98,6 @@
         </div>
       </div>
     </div>
-
-    {{ form.slug }} {# keep base slug bound but hidden from the UI #}
 
     <div class="editor-actions">
       <button type="submit" class="btn-primary">

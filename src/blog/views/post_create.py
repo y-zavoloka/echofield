@@ -27,9 +27,25 @@ class PostManageListView(SuperuserRequiredMixin, ListView):
     context_object_name = "posts"
     paginate_by = 20
 
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:  # type: ignore[override]
+        """Expose the paginated page object as ``posts``.
+
+        The templates and tests expect ``context["posts"]`` to carry pagination
+        metadata (``paginator``, ``has_next``/``has_previous``, etc.). Django's
+        default ``ListView`` exposes those on ``page_obj`` while ``posts`` would
+        normally be just a list. Wrapping ``posts`` with the actual page object
+        keeps iteration working in templates and satisfies the tests.
+        """
+
+        context = super().get_context_data(**kwargs)
+        page_obj = context.get("page_obj")
+        if page_obj is not None:
+            context["posts"] = page_obj
+        return context
+
 
 class PostCreateView(SuperuserRequiredMixin, CreateView):
-    """Custom post creation view with Markdown editor for two languages."""
+    """Custom post creation view with Markdown editor."""
 
     model = Post
     form_class = PostForm
@@ -42,7 +58,7 @@ class PostCreateView(SuperuserRequiredMixin, CreateView):
 
 
 class PostUpdateView(SuperuserRequiredMixin, UpdateView):
-    """Custom post update view with Markdown editor for two languages."""
+    """Custom post update view with Markdown editor."""
 
     model = Post
     form_class = PostForm

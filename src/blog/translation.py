@@ -5,4 +5,10 @@ from .models import Post
 
 @register(Post)
 class PostTranslationOptions(TranslationOptions):
-    fields = ("title", "content", "slug")
+    # We translate title and content only.
+    #
+    # Slugs are kept canonical on the base ``slug`` field so that
+    # ``post.slug`` is stable regardless of active language, while
+    # language-specific slugs live on ``slug_en`` / ``slug_uk`` and
+    # are used explicitly by query helpers and views.
+    fields = ("title", "content")

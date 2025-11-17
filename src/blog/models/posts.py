@@ -17,9 +17,6 @@ class PostPublicQuerySet(models.QuerySet["Post"]):
         A post is considered published if:
         - ``published_at`` is set, and
         - ``published_at`` is less than or equal to the current time.
-
-        The ``status`` field is ignored for publication; it is kept only for
-        legacy data and potential editorial hints.
         """
         now = timezone.now()
         return self.filter(
@@ -63,18 +60,19 @@ class PostPublicManager(models.Manager["Post"]):
 
 
 class Post(models.Model):
-    class Status(models.TextChoices):
-        DRAFT = "draft", "Draft"
-        PUBLISHED = "published", "Published"
-
     title = models.CharField(_("Title"), max_length=300)
     slug = models.SlugField(_("Slug"), max_length=320, unique=True)
+    # Language-specific slugs live on explicit fields so we can query them
+    # directly without relying on modeltranslation to generate virtual fields.
+    slug_en = models.SlugField(
+        _("Slug (English)"), max_length=320, unique=True, null=True, blank=True
+    )
+    slug_uk = models.SlugField(
+        _("Slug (Ukrainian)"), max_length=320, unique=True, null=True, blank=True
+    )
     content = models.TextField(_("Content"), blank=True, null=False)
     featured_image = models.ImageField(
         _("Featured image"), upload_to="posts/featured/", null=True, blank=True
-    )
-    status = models.CharField(
-        _("Status"), max_length=10, choices=Status.choices, default=Status.DRAFT
     )
     published_at = models.DateTimeField(_("Published at"), null=True, blank=True)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
@@ -86,7 +84,7 @@ class Post(models.Model):
     class Meta:
         ordering = ["-published_at", "-created_at"]
         indexes = [
-            models.Index(fields=["status", "published_at"]),
+            models.Index(fields=["published_at"]),
         ]
 
     def __str__(self) -> str:

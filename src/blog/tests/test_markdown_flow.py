@@ -29,7 +29,6 @@ def test_markdown_roundtrip_model_and_view(client: Client) -> None:
     post = Post.objects.create(
         title="Localized markdown",
         slug="localized-markdown",
-        status=Post.Status.PUBLISHED,
         published_at=now,
     )
 
