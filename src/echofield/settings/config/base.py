@@ -62,6 +62,19 @@ class AppSettings(BaseSettings):
     USE_SSL: bool = False
     """Enable SSL/HTTPS security settings. Set to True in production with HTTPS."""
 
+    # --- Sentry / Error monitoring ---
+    SENTRY_DSN: Optional[str] = None
+    """Sentry DSN URL; if unset, Sentry is disabled."""
+
+    SENTRY_ENVIRONMENT: str = "local"
+    """Sentry environment name (e.g. 'local', 'staging', 'production')."""
+
+    SENTRY_TRACES_SAMPLE_RATE: float = 0.0
+    """Sample rate for performance tracing (0–1)."""
+
+    SENTRY_PROFILES_SAMPLE_RATE: float = 0.0
+    """Sample rate for profiling (0–1)."""
+
     # --- Database Configuration ---
     DATABASE_URL: Optional[str] = None
     """Complete database URL (e.g., postgresql://user:pass@host:port/dbname).

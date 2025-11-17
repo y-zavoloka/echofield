@@ -19,6 +19,7 @@ _MODULES: tuple[str, ...] = (
     "echofield.settings.components.database",
     "echofield.settings.components.storage",
     "echofield.settings.components.security",
+    "echofield.settings.components.sentry",
 )
 
 _ENV = os.getenv("DJANGO_ENV")  # e.g.: "local" or "production"
