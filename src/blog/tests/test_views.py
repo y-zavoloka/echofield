@@ -148,7 +148,9 @@ def test_superuser_required_mixin_allows_superuser_request(rf: Any) -> None:
         request = None
 
     user = get_user_model().objects.create_user(
-        username="super", password="x", is_superuser=True  # noqa: S106
+        username="super",
+        password="x",
+        is_superuser=True,  # noqa: S106
     )
     req = rf.get("/")
     req.user = user
@@ -167,7 +169,8 @@ def test_superuser_required_mixin_rejects_non_superuser(rf: Any) -> None:
 
     # Authenticated but not superuser
     user = get_user_model().objects.create_user(
-        username="user", password="x"  # noqa: S106
+        username="user",
+        password="x",  # noqa: S106
     )
     req = rf.get("/")
     req.user = user
@@ -227,9 +230,10 @@ def test_post_manage_list_view_requires_superuser(client: Client) -> None:
 def test_post_manage_list_view_as_superuser(
     client: Client, django_user_model: Any
 ) -> None:
-
     user = django_user_model.objects.create_user(
-        "sup", password="pw", is_superuser=True  # noqa: S106
+        "sup",
+        password="pw",
+        is_superuser=True,  # noqa: S106
     )
     client.force_login(user)
     url = reverse("post_manage_list")
@@ -253,9 +257,10 @@ def test_post_create_view_requires_superuser(client: Client) -> None:
 def test_post_create_view_get_and_post_as_superuser(
     client: Client, django_user_model: Any
 ) -> None:
-
     user = django_user_model.objects.create_user(
-        "superadmin", password="pw", is_superuser=True  # noqa: S106
+        "superadmin",
+        password="pw",
+        is_superuser=True,  # noqa: S106
     )
     client.force_login(user)
     url = reverse("post_create")
@@ -286,9 +291,10 @@ def test_post_create_view_get_and_post_as_superuser(
 def test_post_update_view_requires_superuser(
     client: Client, django_user_model: Any
 ) -> None:
-
     user = django_user_model.objects.create_user(
-        "u1", password="pw", is_superuser=False  # noqa: S106
+        "u1",
+        password="pw",
+        is_superuser=False,  # noqa: S106
     )
     client.force_login(user)
     # Create a post (as admin, via db)
@@ -309,9 +315,10 @@ def test_post_update_view_requires_superuser(
 def test_post_update_view_get_and_post_as_superuser(
     client: Client, django_user_model: Any
 ) -> None:
-
     user = django_user_model.objects.create_user(
-        "root", password="pw", is_superuser=True  # noqa: S106
+        "root",
+        password="pw",
+        is_superuser=True,  # noqa: S106
     )
     client.force_login(user)
     post = Post.objects.create(
@@ -354,9 +361,10 @@ def test_post_update_view_get_and_post_as_superuser(
 def test_manage_list_pagination_for_superuser(
     client: Client, django_user_model: Any
 ) -> None:
-
     user = django_user_model.objects.create_user(
-        "suser", password="pw", is_superuser=True  # noqa: S106
+        "suser",
+        password="pw",
+        is_superuser=True,  # noqa: S106
     )
     client.force_login(user)
     for i in range(25):
