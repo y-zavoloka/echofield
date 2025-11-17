@@ -6,13 +6,6 @@
   <h2>{% translate "Latest posts" %}</h2>
   {% for post in posts %}
     <article>
-      {% if post.featured_image %}
-        <div class="post-image-container">
-          <a class="post-featured-image-link" href="{% url 'post_detail' post.slug %}">
-            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="post-list-image" loading="lazy">
-          </a>
-        </div>
-      {% endif %}
       <h3>
         <a class="post-title-link" href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
       </h3>
