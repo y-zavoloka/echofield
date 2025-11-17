@@ -13,6 +13,10 @@ env:
   R2_BUCKET: ${{ secrets.R2_BUCKET }}
   R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
   R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+  SENTRY_DSN: ${{ vars.SENTRY_DSN }}
+  SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT }}
+  SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE }}
+  SENTRY_PROFILES_SAMPLE_RATE: ${{ vars.SENTRY_PROFILES_SAMPLE_RATE }}
 
 jobs:
   lint:
@@ -114,6 +118,10 @@ jobs:
           USE_R2_STATIC=True
           USE_SSL=True
           IMAGE_TAG=${{ github.sha }}
+          SENTRY_DSN=${{ vars.SENTRY_DSN }}
+          SENTRY_ENVIRONMENT=${{ vars.SENTRY_ENVIRONMENT }}
+          SENTRY_TRACES_SAMPLE_RATE=${{ vars.SENTRY_TRACES_SAMPLE_RATE }}
+          SENTRY_PROFILES_SAMPLE_RATE=${{ vars.SENTRY_PROFILES_SAMPLE_RATE }}
           EOF
 
       - name: Prepare deploy directory
