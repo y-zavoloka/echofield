@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -113,3 +113,14 @@ class AppSettings(BaseSettings):
 
     R2_SECRET_ACCESS_KEY: Optional[str] = None
     """R2 secret access key for authentication."""
+
+    @field_validator(
+        "SENTRY_TRACES_SAMPLE_RATE", "SENTRY_PROFILES_SAMPLE_RATE", mode="before"
+    )
+    @classmethod
+    def _coerce_empty_sentry_rates(cls, v: object) -> object:
+        """Treat missing/empty env values as "use default" instead of raising."""
+
+        if v in (None, ""):
+            return 0.0
+        return v

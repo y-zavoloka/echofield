@@ -16,6 +16,8 @@ repos:
       - id: ruff
         args: ["--fix"]
         additional_dependencies: []
+      - id: ruff-format
+        additional_dependencies: []
 
   # Black: opinionated code formatter
   - repo: https://github.com/psf/black
