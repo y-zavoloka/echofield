@@ -33,8 +33,13 @@
   {% endif %}
   <meta property="og:type" content="{% block og_type %}website{% endblock %}">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="{% static 'blog/themes.css' %}">
+  {# Critical layout styles - keep render-blocking #}
   <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+  {# Theme styles - load asynchronously to avoid blocking initial render #}
+  <link rel="preload" href="{% static 'blog/themes.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="{% static 'blog/themes.css' %}">
+  </noscript>
 </head>
 <body>
   {% include "partials/header.html" %}
@@ -45,6 +50,6 @@
 
   {% include "partials/footer.html" %}
 
-  <script src="{% static 'blog/main.js' %}"></script>
+  <script src="{% static 'blog/main.js' %}" defer></script>
 </body>
 </html>
