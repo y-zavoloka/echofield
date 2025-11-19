@@ -51,6 +51,17 @@
 
     <div class="editor-row">
       <div class="editor-field">
+        {{ form.categories.label_tag }}
+        {{ form.categories }}
+        {{ form.categories.errors }}
+        {% if form.categories.help_text %}
+          <p class="field-help">{{ form.categories.help_text }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="editor-row">
+      <div class="editor-field">
         {{ form.published_at.label_tag }}
         {{ form.published_at }}
         {{ form.published_at.errors }}

@@ -6,7 +6,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}EchoField{% endblock %}</title>
+  {% with page_title=meta_title|default:"EchoField" %}
+    <title>{% block title %}{{ page_title }}{% endblock %}</title>
+    <meta property="og:title" content="{{ page_title }}">
+    <meta name="twitter:title" content="{{ page_title }}">
+    <meta property="og:site_name" content="EchoField">
+  {% endwith %}
+  {% with description=meta_description|default:"EchoField is a bilingual field notebook for research and essays." %}
+    <meta name="description" content="{{ description }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta name="twitter:description" content="{{ description }}">
+  {% endwith %}
+  {% with canonical=canonical_url|default:request.build_absolute_uri %}
+    <link rel="canonical" href="{{ canonical }}">
+    <meta property="og:url" content="{{ canonical }}">
+    <link rel="alternate" hreflang="x-default" href="{{ canonical }}">
+  {% endwith %}
+  {% if alternate_links %}
+    {% for alt in alternate_links %}
+      <link rel="alternate" hreflang="{{ alt.lang }}" href="{{ alt.url }}">
+    {% endfor %}
+  {% endif %}
+  {% if og_image %}
+    <meta property="og:image" content="{{ og_image }}">
+    <meta name="twitter:image" content="{{ og_image }}">
+  {% endif %}
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="{% static 'blog/themes.css' %}">
   <link rel="stylesheet" href="{% static 'blog/style.css' %}">
 </head>

@@ -1,11 +1,15 @@
+import json
+
 from django.conf import settings
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.translation import get_language
 from django.views.generic import DetailView
 
 from ..models import Post
+from ..utils.seo import build_alternate_links, build_canonical_url
 
 
 def _slug_for_lang(post: Post, lang: str) -> str:
@@ -40,7 +44,37 @@ class PostDetailView(DetailView):
 
     def get_queryset(self) -> QuerySet[Post]:
         """Return only publicly available posts."""
-        return Post.public.all()
+        return Post.public.all().prefetch_related("categories")
+
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:
+        context = super().get_context_data(**kwargs)
+        post: Post = context["post"]
+        lang = get_language() or settings.LANGUAGE_CODE
+        per_language_paths = {
+            code: reverse("post_detail", kwargs={"slug": _slug_for_lang(post, code)})
+            for code, _ in settings.LANGUAGES
+        }
+        canonical = build_canonical_url(
+            self.request, per_language_paths.get(lang), lang=lang
+        )
+        structured_data = post.build_json_ld(canonical)
+        context.update(
+            {
+                "meta_title": f"{post.title} — EchoField",
+                "meta_description": post.seo_description or "EchoField",
+                "canonical_url": canonical,
+                "alternate_links": build_alternate_links(
+                    self.request, per_language_paths
+                ),
+                "og_image": post.get_social_image_url(),
+                "structured_data_json": (
+                    json.dumps(structured_data, ensure_ascii=False)
+                    if structured_data
+                    else ""
+                ),
+            }
+        )
+        return context
 
     def get(
         self, request: HttpRequest, *args: object, **kwargs: dict[str, object]

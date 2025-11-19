@@ -12,6 +12,15 @@
       {% if post.published_at %}
         <time>{{ post.published_at|date:"d.m.Y" }}</time>
       {% endif %}
+      {% with categories=post.categories.all %}
+        {% if categories %}
+          <div class="post-category-list" aria-label="{% translate 'Categories' %}">
+            {% for category in categories %}
+              <span class="post-category-pill">{{ category.name }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
     </article>
   {% empty %}
     <p>{% translate "No posts yet." %}</p>

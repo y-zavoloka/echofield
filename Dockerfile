@@ -53,7 +53,12 @@ WORKDIR /app
 # Copy project code (including collected static files) from build stage
 COPY --from=build /app /app
 
+# Ensure entrypoint script is executable
+RUN chmod +x /app/docker/web-entrypoint.sh
+
 # Expose Django port
 EXPOSE 8000
+
+ENTRYPOINT ["/app/docker/web-entrypoint.sh"]
 
 CMD ["uv", "run", "gunicorn", "echofield.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2"]

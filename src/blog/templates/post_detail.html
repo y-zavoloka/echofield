@@ -8,13 +8,39 @@
     {% if post.published_at %}
       <time>{{ post.published_at|date:"d.m.Y H:i" }}</time>
     {% endif %}
+    {% with categories=post.categories.all %}
+      {% if categories %}
+        <div class="post-category-list" aria-label="{% translate 'Categories' %}">
+          {% for category in categories %}
+            <span class="post-category-pill">{{ category.name }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
     <div>{{ post.content_html|safe }}</div>
   </article>
   {% if post.featured_image %}
     <div class="post-image-container">
-      <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="post-image" loading="lazy">
+      <picture>
+        {% if post.featured_image_webp_srcset %}
+          <source type="image/webp" srcset="{{ post.featured_image_webp_srcset }}">
+        {% endif %}
+        <img
+          src="{{ post.featured_image.url }}"
+          alt="{{ post.title }}"
+          class="post-image"
+          loading="lazy"
+          decoding="async"
+        >
+      </picture>
     </div>
   {% endif %}
 
   <p><a href="/">&larr; {% translate "Back to posts" %}</a></p>
+
+  {% if structured_data_json %}
+    <script type="application/ld+json">
+      {{ structured_data_json|safe }}
+    </script>
+  {% endif %}
 {% endblock %}

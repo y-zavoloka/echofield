@@ -26,25 +26,32 @@ repos:
       - id: black
         language_version: python3
 
-  # Local hooks that rely on project tooling (uv, pytest, mypy)
+  # Local hooks that rely on project tooling (pytest, mypy) inside the active virtualenv
   - repo: local
     hooks:
       - id: pytest
         name: pytest (pre-push)
-        entry: sh
+        entry: bash
         language: system
         pass_filenames: false
         stages: [pre-push]
         args:
-          - -c
-          - "PYTHONPATH=src TEST_DATABASE_URL=sqlite:///./.test_db.sqlite3 uv run pytest"
+          - -lc
+          - |
+            PYTHONPATH=src \
+            TEST_DATABASE_URL=sqlite:///./.test_db.sqlite3 \
+            python -m pytest
 
       - id: mypy
         name: mypy (pre-push)
-        entry: sh
+        entry: bash
         language: system
         pass_filenames: false
         stages: [pre-push]
         args:
-          - -c
-          - "PYTHONPATH=src DJANGO_SETTINGS_MODULE=echofield.settings TEST_DATABASE_URL=sqlite:///./.test_db.sqlite3 uv run mypy src"
+          - -lc
+          - |
+            PYTHONPATH=src \
+            DJANGO_SETTINGS_MODULE=echofield.settings \
+            TEST_DATABASE_URL=sqlite:///./.test_db.sqlite3 \
+            python -m mypy src

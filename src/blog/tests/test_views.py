@@ -11,7 +11,7 @@ from django.test.client import Client
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone, translation
 
-from blog.models import Post
+from blog.models import Category, Post
 
 
 # Utility to populate all required localized fields (post.py/modeltranslation style)
@@ -34,6 +34,19 @@ def set_localized_post_fields(
     )
     setattr(post, "content_uk", "Ukrainian content")
     post.save()
+
+
+def create_category(
+    name: str = "Technology",
+    slug: str = "technology",
+) -> Category:
+    category = Category.objects.create(name=name, slug=slug)
+    setattr(category, "name_en", name)
+    setattr(category, "name_uk", f"UA {name}")
+    setattr(category, "slug_en", slug)
+    setattr(category, "slug_uk", f"ua-{slug}")
+    category.save()
+    return category
 
 
 @pytest.mark.django_db
@@ -72,6 +85,35 @@ def test_post_list_view_shows_only_published_posts(client: Client) -> None:
 
 
 @pytest.mark.django_db
+def test_post_list_view_sets_seo_context(client: Client) -> None:
+    response = client.get(reverse("post_list"), secure=True)
+    assert response.status_code == 200
+    assert response.context["meta_title"]
+    assert response.context["canonical_url"].endswith("?lang=en")
+    alternates = response.context["alternate_links"]
+    assert any(link["lang"] == "uk" for link in alternates)
+
+
+@pytest.mark.django_db
+def test_post_list_view_renders_categories(client: Client) -> None:
+    now = timezone.now()
+    category = create_category()
+    post = Post.objects.create(
+        title="Categorized post",
+        slug="categorized",
+        content="",
+        published_at=now - timedelta(days=1),
+    )
+    set_localized_post_fields(post, title="Categorized EN", slug="categorized-en")
+    post.categories.add(category)
+
+    response = client.get(reverse("post_list"), secure=True)
+    assert response.status_code == 200
+    body = response.content.decode()
+    assert category.name in body
+
+
+@pytest.mark.django_db
 def test_post_detail_view_uses_canonical_slug_for_current_language(
     client: Client,
 ) -> None:
@@ -88,6 +130,47 @@ def test_post_detail_view_uses_canonical_slug_for_current_language(
         response = client.get(url, secure=True)
     assert response.status_code == 200
     assert response.context["post"].pk == post.pk
+
+
+@pytest.mark.django_db
+def test_post_detail_view_renders_categories(client: Client) -> None:
+    now = timezone.now()
+    category = create_category(name="Insights", slug="insights")
+    post = Post.objects.create(
+        title="Detail categories",
+        slug="detail-categories",
+        content="",
+        published_at=now - timedelta(days=1),
+    )
+    set_localized_post_fields(post, slug="detail-categories-en")
+    post.categories.add(category)
+
+    response = client.get(
+        reverse("post_detail", kwargs={"slug": "detail-categories-en"}), secure=True
+    )
+    assert response.status_code == 200
+    assert category.name in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_post_detail_view_sets_seo_context(client: Client) -> None:
+    now = timezone.now()
+    post = Post.objects.create(
+        title="SEO detail",
+        slug="seo-detail",
+        content="",
+        published_at=now - timedelta(days=1),
+    )
+    set_localized_post_fields(post, slug="seo-detail")
+
+    response = client.get(
+        reverse("post_detail", kwargs={"slug": "seo-detail"}), secure=True
+    )
+    assert response.status_code == 200
+    canonical = response.context["canonical_url"]
+    assert canonical.endswith("?lang=en")
+    alternates = response.context["alternate_links"]
+    assert any(link["lang"] == "uk" for link in alternates)
 
 
 @pytest.mark.django_db

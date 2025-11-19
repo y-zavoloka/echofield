@@ -80,7 +80,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # Test files can use 'Any' type annotations and plain asserts more freely
 "tests/*.py" = ["ANN401", "S101"]
-"*/tests/*.py" = ["S101"]
+"*/tests/*.py" = ["ANN001", "ANN401", "S101"]
 "src/blog/tests/test_views.py" = ["ANN401", "S106"]
 "src/blog/management/commands/create_fixtures.py" = ["S311"]
 

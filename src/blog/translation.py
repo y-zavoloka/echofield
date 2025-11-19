@@ -1,6 +1,6 @@
 from modeltranslation.translator import TranslationOptions, register
 
-from .models import Post
+from .models import Category, Post
 
 
 @register(Post)
@@ -12,3 +12,10 @@ class PostTranslationOptions(TranslationOptions):
     # language-specific slugs live on ``slug_en`` / ``slug_uk`` and
     # are used explicitly by query helpers and views.
     fields = ("title", "content")
+
+
+@register(Category)
+class CategoryTranslationOptions(TranslationOptions):
+    """Expose localized name/slug fields for categories."""
+
+    fields = ("name", "slug")

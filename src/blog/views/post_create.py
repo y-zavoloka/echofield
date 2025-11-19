@@ -2,6 +2,7 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
@@ -46,6 +47,10 @@ class PostManageListView(SuperuserRequiredMixin, ListView):
         if page_obj is not None:
             context["posts"] = page_obj
         return context
+
+    def get_queryset(self) -> models.QuerySet[Post]:  # type: ignore[override]
+        """Prefetch categories for admin listings to reduce queries."""
+        return super().get_queryset().prefetch_related("categories")
 
 
 class PostCreateView(SuperuserRequiredMixin, CreateView):

@@ -2,7 +2,7 @@ from typing import Any
 
 from django import forms
 
-from ..models import Post
+from ..models import Category, Post
 
 
 class PostForm(forms.ModelForm):
@@ -100,6 +100,13 @@ class PostForm(forms.ModelForm):
         label="Featured Image",
         widget=forms.ClearableFileInput(attrs={"class": "form-control"}),
     )
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.none(),
+        required=False,
+        label="Categories",
+        widget=forms.CheckboxSelectMultiple(attrs={"class": "category-checkboxes"}),
+        help_text="Select one or more categories for this post.",
+    )
 
     class Meta:
         model = Post
@@ -118,10 +125,15 @@ class PostForm(forms.ModelForm):
             "content_uk",
             "featured_image",
             "published_at",
+            "categories",
         ]
         widgets = {
             "featured_image": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
+        super().__init__(*args, **kwargs)
+        self.fields["categories"].queryset = Category.objects.order_by("name")
 
     def clean(self) -> dict[str, Any]:
         cleaned = super().clean()
@@ -176,4 +188,5 @@ class PostForm(forms.ModelForm):
 
         if commit:
             instance.save()
+            self.save_m2m()
         return instance
